@@ -8,10 +8,101 @@
 # 2) Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas
 
 ACCIÓN 2.2.11 ES
-
+# ---------------------- #
 PROCESO
 
+FECHA = Registro
+    año : N(4)
+    mes : N(2)
+    dia : N(2)
+Fin Registro
 
+ALUMNOS = Registro
+    sexo : ('M', 'F'),
+    carrera : ('ISI', 'IQ', 'IEM', 'LAR'),
+    nro_legajo : N(5),
+    fecha_ingreso : FECHA,
+    total_materias_aprobadas : N(2)
+Fin Registro
+
+al : ALUMNO 
+a_alumno : Archivo de ALUMNOS ordenado por sexo, carrera, nro_legajo
+# Contadores, 2 por nivel.
+total_men, total_gral : entero
+total_sexo_men, total_sexo_gral : entero
+tot_carr_men, tot_carr_gral : entero
+# Resguardos
+res_carrera : ('ISI', 'IQ', 'IEM', 'LAR')
+res_sexo : ('M', 'F')
+
+# Subacciones
+Subacción corte_carrera Es
+    ESC('El total de alumnos de sexo ', res_sexo, ' y de la carrera ', res_carrera, ' que ingresaron en el año 2009 con más de 20 materias aprobadas son de: ', tot_carr_gral)
+    ESC('El total de alumnos de sexo ', res_sexo, ' y de la carrera ', res_carrera, ' que ingresaron en el año 2009 con menos de 20 materias aprobadas son de: ', tot_carr_men)
+    total_sexo_gral := total_sexo_gral + tot_carr_gral
+    total_sexo_men := total_sexo_men + tot_carr_men
+    # Reinicia contador de CARRERA
+    tot_carr_gral := 0
+    tot_carr_men := 0
+    res_carrera := al.carrera
+Fin Subacción
+
+Subacción corte_sexo Es
+    corte_carrera
+    ESC('El total de alumnos de sexo ', res_sexo, ' que ingresaron en el año 2009 con más de 20 materias aprobadas es ', total_sexo_gral)
+    ESC('El total de alumnos de sexo ', res_sexo, ' que ingresaron en el año 2009 con menos de 20 materias aprobadas es ', total_sexo_men)
+    total_gral := total_gral + total_sexo_gral
+    total_men := total_men + total_sexo_men
+    total_sexo_gral := 0
+    total_sexo_men := 0
+    res_sexo := al.sexo
+Fin Subacción
+
+# ---------------------- #
 AMBIENTE
+    Abrir E/(a_alumno)
+    Leer(a_alumno, al)
+    # Se inician contadores a 0.
+    total_men := 0
+    total_gral := 0
+    total_sexo_men := 0
+    total_sexo_gral := 0
+    tot_carr_men := 0
+    tot_carr_gral := 0
+    # Se crea variables resguardo.
+    res_carrera := al.carrera
+    res_sexo := al.sexo
+    # Se analiza archivo
 
+    Mientras NFDA(a_alumno) hacer
+        # Se verifica si existe corte
+        Si (res_sexo <> al.sexo) entonces
+            corte_sexo
+        Sino
+            Si (res_carrera <> al.carrera) entonces
+                corte_carrera
+            Fin Si
+        Fin Si
+        # Si no hay corte, se suma al contador ya que aprobo + de 20 o menos:
+        Si (al.fecha_ingreso = 2009) entonces 
+            Si (al.total_materias_aprobadas > 20) entonces
+                tot_carr_gral := tot_carr_gral + 1
+            Sino
+                tot_carr_men := tot_carr_men + 1
+            Fin Si
+        Fin Si
+
+        Leer(a_alumno, al)
+
+    Fin Mientras
+
+    corte_sexo
+    # Total general
+    ESC('El total de alumnos que ingresaron en el año 2009 con:')
+    ESC('- Más de 20 materias aprobadas: ', total_gral)
+    ESC('- Menos de 20 materias aprobadas: ', total_men)
+
+    Cerrar(a_alumno)
+
+# ---------------------- #
 FIN ACCIÓN
