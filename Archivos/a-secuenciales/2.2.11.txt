@@ -1,0 +1,17 @@
+# LINK: https://aed-frre.github.io/practica/2.2/#ejercicio-2211
+# CONSIGNA: 
+# Se dispone de un archivo con datos de los alumnos de la U.T.N. con la siguiente información para cada alumno:
+# PRODUCTOS Ordenado por Sexo, Carrera, Nro_Legajo 
+# Sexo | Carrera | Nro_Legajo | Fecha_Ingreso | Total_Materias_Aprobadas
+# Se desea un listado con el siguiente detalle por sexo, carrera y total general
+# 1) Total de alumnos que ingresaron en el año 2009 con más de 20 materias aprobadas.
+# 2) Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas
+
+ACCIÓN 2.2.11 ES
+
+PROCESO
+
+
+AMBIENTE
+
+FIN ACCIÓN
