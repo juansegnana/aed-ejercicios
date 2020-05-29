@@ -1,0 +1,7 @@
+#  ---------- CONSIGNA 2.2.12 ----------
+# Dada una secuencia con información de población de un PAIS:
+# POBLACION Ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+# Provincia | Departamento | Ciudad Barrio | ID_Casa | Cantidad_Habitantes 
+# Generar una secuencia con información de los departamentos de esa provincia, cuyo registro tenga el siguiente formato:
+# POBLACION_SALIDA
+# Provincia | Departamento | Cantidad_Habitantes 

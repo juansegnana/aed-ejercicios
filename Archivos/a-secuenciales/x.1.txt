@@ -1,0 +1,134 @@
+
+Acción X1 es
+
+Ambiente
+
+FECHA = Registro
+    año : N(4)
+    mes : N(2)
+    dia : N(2)
+Fin Registro
+
+EXPEDIENTES = Registro
+    jurisdiccion : (1..6)
+    fuero : ('P', 'C', 'F', 'A') # p: penal, c: civil y comercial, f: familiar, a: administrativo
+    nro_exped : N(8)
+    caratula : N(8)
+    fecha_ingreso : FECHA
+    estado : (1..3) # 1: iniciado, 2: en proceso, 3: finalizado
+Fin Registro
+
+EXP_SALIDA = Registro
+    jurisdiccion : N(1..6)
+    fuero: ('P', 'C', 'F', 'A')
+    cant_iniciados : N(4)
+    cant_EP : N(4)
+    cant_Fin : N(4)
+Fin Registro
+
+a_exp = Archivo de EXPEDIENTES ordenado por jurisdiccion, fuero, nro_exped
+v_exp = EXPEDIENTES
+a_sal = Archivo de EXP_SALIDA ordenado por jurisdiccion, fuero
+v_sal = EXP_SALIDA
+
+res_jurisdiccion: (1..6)
+res_fuero: ('P', 'C', 'F', 'A')
+
+# CONTADORES - (fin, ingr) finalizados e ingresados
+# - Generales, Jurisdicción, Fueros.
+total_gral_fin, total_gral_ingr : enteros
+total_jur_fin, total_jur_ingr : enteros
+total_fuero_fin, total_fuero_ingr : enteros
+
+# Cortes
+Subacción CORTE_FUERO es
+    ESC('Para fuero: ', res_fuero);
+    ESC('Total de expedientes ingresados', total_fuero_ingr)
+    ESC('Total de expedientes finalidas', total_fuero_fin)
+    ESC('El porcentaje de finalizados sobre el total ingresado es:', (total_fuero_fin*100)/total_fuero_ingr, '%');
+
+    v_sal.jurisdiccion := v_exp.jurisdiccion
+    v_sal.fuero := v_exp.fuero
+    v_sal.cant_iniciados := total_fuero_ingr
+    v_sal.cant_EP := ENPROCESO
+    v_sal.cant_Fin := total_fuero_fin
+    ESC(a_sal, v_sal)
+
+    total_jur_ing := total_jur_ingr + total_fuero_ingr
+    total_jur_fin := total_jur_fin + total_fuero_fin
+
+    res_fuero := v_exp.fuero;
+    total_fuero_fin := 0
+    total_fuero_ingr := 0
+    total_gral_ingr := 0 
+    total_gral_fin := 0
+
+Fin Subacción
+
+Subacción CORTE_JURISDICCION es
+    CORTE_FUERO
+    ESC('Para la jurisdicción: ', res_jurisdiccion)
+    ESC('Total de expedientes ingresados: ', total_gral_ingr)
+    ESC('Total de expedientes finalizados: ', total_gral_fin)
+    ESC('El porcentaje de finalizados sobre el otal ingresado es: ', (total_gral_fin*100)/total_gral_ingr, '%')
+
+    total_gral_ingr := total_gral_ingr + total_jur_ingr
+    total_gral_fin := total_gral_fin + total_jur_fin
+
+    res_jurisdiccion := a_exp.jurisdiccion
+
+    total_jur_ingr := 0
+    total_jur_fin := 0
+
+Fin Subacción
+
+Proceso
+
+Abrir E/(a_exp) 
+Abrir S/(a_sal) # 3) archivo de salida
+Leer(a_exp, v_exp)
+
+res_jurisdiccion := v_exp.jurisdiccion
+res_fuero := v_exp.fuero
+
+total_gral_ingr := 0
+total_gral_fin := 0
+total_jur_ingr := 0
+total_jur_fin := 0
+total_fuero_ingr := 0
+total_fuero_fin := 0
+
+ESC('Para el fuero penal: ')
+ESC('|nro_exp|  |caratula| |fecha_ingreso| |estado|')
+
+Mientras NFDA(a_exp)
+    Si res_jurisdiccion <> a_exp.jurisdiccion entonces
+        CORTE_JURISDICCION
+    Sino
+        Si res_fuero <> a_exp.fuero entonces
+            CORTE_FUERO
+        Fin Si
+    Fin Si    
+
+    Si a_exp.fuero = 'P' entonces
+        ESC(a_exp.nro_exped, a_exp.caratula, a_exp.fecha_ingreso, a_exp.estado)
+    Fin Si 
+
+    total_fuero_ingr := total_fuero_ingr + 1
+
+    Según (a_exp.estado) hacer
+        1: total_gral_ingr := total_gral_ingr + 1
+        2: total_enproceso := ENPROCESO + 1
+        3: total_fuero_fin := total_fuero_fin + 1 
+    Fin Según
+
+Fin Mientras
+
+CORTE_JURISDICCION
+Cerrar(a_exp)
+Cerrar(a_sal)
+ESC('Total de expedientes ingresados: ', total_gral_ingr)
+ESC('Total de expedientes finalizados: ', total_gral_fin)
+ESC('El porcentaje de finalizados sobre el total ingresado es: ', (total_gral_fin*100)/total_gral_ingr, '%')
+
+Fin Acción

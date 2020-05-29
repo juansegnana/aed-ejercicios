@@ -63,6 +63,7 @@ AMBIENTE
     Abrir E/(a_alumno)
     Leer(a_alumno, al)
     # Se inician contadores a 0.
+    # men son la cantidad de alumnos de 2009 con < 20 materias aprobadas. gral es mayor
     total_men := 0
     total_gral := 0
     total_sexo_men := 0
