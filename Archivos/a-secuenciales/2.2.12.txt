@@ -5,3 +5,37 @@
 # Generar una secuencia con información de los departamentos de esa provincia, cuyo registro tenga el siguiente formato:
 # POBLACION_SALIDA
 # Provincia | Departamento | Cantidad_Habitantes 
+
+ACCIÓN 2.2.12 ES
+
+AMBIENTE
+
+POBLACIÓN = Registro
+	provincia : an(24)
+	departamento : an(24)
+	ciudad : an(24)
+	barrio : an(24)
+	id_casa : N(5)
+	cant_hab : N(2)
+Fin-registro
+
+v_pobl = POBLACIÓN
+a_pobl = Archivo de POBLACIÓN ordenado por provincia, departamento, ciudad, barrio, id_casa
+
+POB_SALIDA = Registro
+	provincia : an(24)
+	departamento : an(24)
+	cant_habitantes : N(5)
+Fin-registro
+
+v_pobl_salida = POB_SALIDA
+a_pobl_salida = Archivo de POB_SALIDA
+
+// hacer cortes
+
+PROCESO
+
+Abrir E/()
+
+
+FIN ACCIÓN
