@@ -15,6 +15,152 @@ Acción 2.2.13 es
 
 Ambiente
 
+FECHA = Registro
+    año : N(4)
+    mes : N(2)
+    dia : N(2)
+Fin Registro
+
+REPARACIONES = Registro
+    cod_sucursal : N(3)
+    marca : AN(24)
+    modelo : AN(24)
+    cod_trag : AN(8)
+    fecha_rep : FECHA
+    costo_rep : N(6)
+Fin Registro
+
+// Archivo y variable
+a_rep : Archivo REPARACIONES ordenado por cod_sucursal, marca, modelo, cod_trag
+v_rep : REPARACIONES
+
+// Contadores
+cont_costes_total, cont_rep_total : enteros
+cont_costes_trag, cont_rep_trag : enteros
+cont_costes_modelo, cont_rep_modelo : enteros
+cont_costes_marca, cont_rep_marca : enteros
+cont_costes_sucursal, cont_rep_sucursal : enteros
+
+// Cortes
+    Subacción CORTE_SUCURSAL es
+        CORTE_MARCA
+
+        ESC('SUCURSAL: #', res_sucursal)
+        ESC('Total de reparaciones:', cont_rep_sucursal)
+        ESC('Coste total de reparaciones: $', cont_costes_sucursal)
+
+        res_sucursal := v_rep.sucursal
+        
+        cont_rep_total := cont_rep_total + cont_rep_sucursal
+        cont_costes_total := cont_costes_total + cont_costes_sucursal
+
+        cont_costes_sucursal := 0
+        cont_rep_sucursal := 0
+
+    Fin Subacción
+
+    Subacción CORTE_MARCA es
+        CORTE_MODELO
+
+        ESC('MARCA: ', res_marca)
+        ESC('Total de reparaciones:', cont_rep_marca)
+        ESC('Coste total de reparaciones: $', cont_costes_marca)
+
+        res_marca := v_rep.marca
+
+        cont_rep_sucursal := cont_rep_sucursal + cont_rep_marca
+        cont_costes_sucursal := cont_costes_sucursal + cont_costes_marca
+
+        cont_rep_marca := 0
+        cont_costes_marca := 0
+
+    Fin Subacción
+
+    Subacción CORTE_MODELO es
+        CORTE_TRAG
+
+        ESC('MODELO: ', res_modelo)
+        ESC('Total de reparaciones:', cont_rep_modelo)
+        ESC('Coste total de reparaciones: $', cont_costes_modelo)
+        
+        res_modelo := v_rep.modelo
+
+        cont_rep_marca := cont_rep_marca + cont_rep_modelo
+        cont_costes_marca := cont_costes_marca + cont_costes_modelo
+
+        cont_rep_modelo := 0
+        cont_costes_modelo := 0
+
+    Fin Subacción
+
+    Subacción CORTE_TRAG es
+
+        // Se reinicia el resguardo y contadores
+        res_trag := v_rep.cod_trag
+
+        ESC('TRAGAMONEDAS: #', res_trag)
+        ESC('Total de reparaciones:', cont_rep_trag)
+        ESC('Coste total de reparaciones: $', cont_costes_trag)
+
+        cont_rep_modelo := cont_rep_modelo + cont_rep_trag
+        cont_costes_modelo := cont_costes_modelo + cont_costes_trag
+
+        cont_rep_trag := 0
+        cont_costes_trag := 0
+
+    Fin Subacción
+
+// Resguardos
+res_sucursal : N(3)
+res_marca : AN(24)
+res_modelo : AN(24)
+res_trag : AN(8)
+
 Proceso
+
+Abrir E/(a_rep)
+Leer(a_rep, v_rep)
+res_sucursal := a_rep.sucursal
+res_marca := a_rep.marca
+res_modelo := a_rep.modelo
+res_trag := a_rep.cod_trag
+
+// Iniciar contadores
+cont_rep_total := 0; cont_costes_total := 0;
+cont_rep_sucursal := 0; cont_costes_sucursal := 0;
+cont_rep_marca := 0; cont_costes_marca := 0;
+cont_rep_modelo := 0; cont_costes_modelo := 0;
+cont_rep_trag := 0; cont_costes_trag := 0;
+
+Mientras NFDA(a_rep) hacer
+    Si (res_sucursal <> a_rep.sucursal) entonces
+        CORTE_SUCURSAL
+    SINO
+        Si (res_marca <> a_rep.marca) entonces
+            CORTE_MARCA
+        SINO
+            Si (res_modelo <> a_rep.modelo) entonces
+                CORTE_MODELO
+            SINO
+                Si (res_trag <> a_rep.cod_trag) entonces
+                    CORTE_TRAG
+                Fin Si
+            Fin Si
+        Fin Si
+    Fin Si
+
+    cont_rep_trag := cont_rep_trag + 1
+    cont_costes_trag := v_rep.costo_rep
+
+    Leer(a_rep, v_rep)
+
+Fin Mientras
+
+CORTE_SUCURSAL
+// Informar total general
+ESC('Total general de reparaciones: ', cont_rep_total)
+ESC('Coste total de las reparaciones: $', cont_costes_total)
+
+Cerrar(a_rep)
 
 Fin Acción
