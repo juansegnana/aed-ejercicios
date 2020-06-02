@@ -10,6 +10,7 @@ ACCIÓN 2.2.12 ES
 
 AMBIENTE
 
+// Registros
 POBLACIÓN = Registro
 	provincia : an(24)
 	departamento : an(24)
@@ -25,17 +26,68 @@ a_pobl = Archivo de POBLACIÓN ordenado por provincia, departamento, ciudad, bar
 POB_SALIDA = Registro
 	provincia : an(24)
 	departamento : an(24)
-	cant_habitantes : N(5)
+	cant_hab : N(5)
 Fin-registro
 
 v_pobl_salida = POB_SALIDA
 a_pobl_salida = Archivo de POB_SALIDA
 
-// hacer cortes
+// Resguardos
+res_provincia : AN(24)
+res_departamento : AN(24)
+
+// Contadores
+contador_habxdepto : entero
+
+// Cortes
+
+	Subacción CORTE_PROVINCIA es
+		CORTE_DEPARTAMENTO
+		res_provincia := v_pobl.provincia
+	Fin Subacción
+
+	Subacción CORTE_DEPARTAMENTO es
+
+		// Asignar valores a secuencia de salida
+		v_pobl_salida.provincia := res_provincia
+		v_pobl_salida.departamento := res_departamento
+		v_pobl_salida.cant_hab := contador_habxdepto
+		ESC(a_pobl_salida, v_pobl_salida)
+
+		res_departamento := v_pobl.departamento
+		contador_habxdepto := 0
+
+	Fin Subacción
 
 PROCESO
 
-Abrir E/()
+	Abrir E/(a_pobl)
+	Abrir S/(a_pobl_salida)
+	Leer(a_pobl, v_pobl)
 
+	res_provincia := v_pobl.provincia
+	res_departamento := v_pobl.departamento
+
+	contador_habxdepto := 0
+
+
+	Mientras NFDA(a_pobl) hacer
+		Si (res_provincia <> v_pobl.provincia) entonces
+			CORTE_PROVINCIA
+		SINO
+			Si (res_departamento <> v_pobl.departamento) entonces
+				CORTE_DEPARTAMENTO
+			Fin Si
+		Fin Si
+
+		contador_habxdepto := contador_habxdepto + v_pobl_salida.cant_hab
+		Leer(a_pobl, v_pobl)
+
+	Fin Mientras
+
+	CORTE_PROVINCIA
+
+	Cerrar(a_pobl)
+	Cerrar(a_pobl_salida)
 
 FIN ACCIÓN
