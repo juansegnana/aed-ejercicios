@@ -1,0 +1,28 @@
+// ACTIVIDAD 2.2.14
+// Dados el siguiente fichero con datos de un censo de la ciudad de Resistencia:
+// CENSO Ordenado por Radio, Manzana, Nro_Vivienda
+// Radio | Manzana | Nro_Vivienda | Condicion_Vivienda | Cantidad_Habitantes
+// Condición puede ser : Muy Buena, Buena o Mala. 
+// Obtener los siguientes totales de personas que habitan
+// en viviendas cuya condición es muy buena: 
+// total en la ciudad y totales por Radio y Manzana).
+
+Acción 2.2.14 es
+
+Ambiente
+
+CENSO = Registro
+    radio : AN(6)
+    manzana : AN(6)
+    nro_vivienda : N(6)
+    condicion_vivienda : ('MB', 'B', 'M') // muy buena, buena, mala.
+    cantidad_habitantes : N(2)
+Fin Registro
+
+// Contadores
+    cont_totalxciudad
+
+Proceso
+
+
+Fin Acción
