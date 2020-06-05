@@ -1,0 +1,49 @@
+Acción PROBL2 es
+
+Ambiente
+sec_apuntes : secuencia de caracteres
+sec_salida_apuntes : secuencia de caracteres
+
+ap : caracteres
+
+num_voc = {'1', '2', '3', '4', '5'}
+vocales = {'a', 'e', 'i', 'o','u'}
+
+Proceso
+
+ARR(sec_apuntes)
+CREAR(sec_salida_apuntes)
+AVZ(sec_apuntes, ap)
+
+Mientras NFDS(sec_apuntes) hacer
+	
+	Mientras (ap = ' ') hacer
+		ESC(sec_salida_apuntes, ap)
+		AVZ(sec_apuntes, ap)
+		cont_palabras := cont_palabras + 1 
+	Fin Mientras
+	
+	Si (ap en num_voc) entonces
+		Según ap hacer
+			'1': ap := 'a'; 
+			'2': ap := 'e';
+			'3': ap := 'i';
+			'4': ap := 'o';
+			'5': ap := 'u';
+		Fin Según
+		ESC(sec_salida_apuntes, ap)
+		cont_solucionado := cont_solucionado + 1
+	SINO
+		cont_sinerror := cont_sinerror + 1
+	Fin Si
+	
+	AVZ(sec_apuntes, ap)
+
+Fin Mientras
+
+ESC('Oraciones modificadas :', cont_solucionado,'. Oraciones sin errores:', cont_sinerror)
+ESC('Promedio de pal. mod x oración:', (cont_solucionado/cont_palabras)*100)
+
+CERRAR(sec_apuntes); CERRAR(sec_salida_apuntes);
+
+Fin Acción
