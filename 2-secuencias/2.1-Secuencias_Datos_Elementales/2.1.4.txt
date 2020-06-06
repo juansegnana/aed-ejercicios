@@ -1,0 +1,22 @@
+// ACTIVIDAD #
+
+Acción SOCIOS es
+    
+Ambiente
+
+sec_socios : secuencia de caracteres
+v_socios : caracteres
+
+Proceso
+ARR(sec_socios)
+AVZ(sec_socios, v_socios)
+
+Mientras NFDS(sec_socios) hacer
+    cont_socios := cont_socios + 1 
+    AVZ(sec_socios, v_socios)
+Fin Mientras
+
+ESC('Total de socios:', cont_socios)
+CERRAR(sec_socios)
+
+Fin Acción

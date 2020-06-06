@@ -1,0 +1,28 @@
+// ACTIVIDAD #2.1.2
+
+Acción CONSONANTES es
+    
+Ambiente
+
+sec_alf : secuencia de caracteres
+v_alf : caracteres
+vocales = {'a', 'e', 'i', 'o', 'u'}
+cont_consonantes : entero
+
+Proceso
+ARR(sec_alf)
+AVZ(sec_alf, v_alf)
+cont_consonantes := 0
+
+Mientras NFDA(sec_alf) hacer
+    Si (v_alf NO en vocales) entonces
+        // ES consonante.
+        cont_consonantes := cont_consonantes + 1
+    Fin Si
+    AVZ(sec_alf, v_alf)
+Fin Mientras
+
+ESC('Cantidad de CONSONANTES: ', cont_consonantes)
+CERRAR(sec_alf)
+
+Fin Acción

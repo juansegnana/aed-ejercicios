@@ -1,0 +1,28 @@
+// ACTIVIDAD #2.1.3
+
+Acción SALIDA_SIN$ es
+    
+Ambiente
+
+sec_entrada : secuencia de caracteres
+sec_salida : secuencia de caracteres
+
+v_ent : caracteres
+v_sal : caracteres
+
+Proceso
+
+ARR(sec_entrada)
+AVZ(sec_entrada, v_ent)
+CREAR(sec_salida)
+AVZ(sec_salida, v_sal)
+
+Mientras NFDS(sec_entrada) hacer
+    Si (v_ent NO = '$') entonces
+        ESC(sec_salida, v_ent)
+    Fin Si 
+    AVZ(sec_entrada, v_ent)
+    AVZ(sec_salida, v_sal)
+Fin Mientras
+
+Fin Acción

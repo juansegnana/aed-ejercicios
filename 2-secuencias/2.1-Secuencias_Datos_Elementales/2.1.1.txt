@@ -1,0 +1,27 @@
+// ACTIVIDAD #2.1.1 - Secuencia de Datos Elementales
+
+Acción ALFABETO es
+  
+Ambiente
+
+sec_abc : secuencia de caracteres
+v_abc : caracteres
+cont_deA : entero
+
+Proceso
+
+ARR(sec_abc)
+AVZ(sec_abc, v_abc)
+cont_deA := 0
+
+Mientras NFDS(sec_abc) hacer
+    Si (v_abc = 'A') entonces
+        cont_deA := cont_deA + 1
+    Fin Si
+    AVZ(sec_abc, v_abc)
+Fin Mientras
+
+ESC('Total de A:', cont_deA)
+CERRAR(sec_abc)
+
+Fin Acción

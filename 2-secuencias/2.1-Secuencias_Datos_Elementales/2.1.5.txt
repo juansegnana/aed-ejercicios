@@ -1,0 +1,21 @@
+// ACTIVIDAD #2.1.5
+
+Acción SOCIOS_FIGURADOS es
+    
+Ambiente
+
+sec_socios : secuencia de caracteres
+v_socios : caracteres
+
+Proceso
+ARR(sec_socios)
+AVZ(sec_socios, v_socios)
+
+Mientras NFDS(sec_socios) hacer
+
+    AVZ(sec_socios, v_socios)
+Fin Mientras
+
+CERRAR(sec_socios)
+
+Fin Acción
