@@ -1,0 +1,21 @@
+# ACT. 2.1.08 -> https://aed-frre.github.io/practica/2.1/#ejercicio-218
+
+Acción CUIT-MOD Es
+
+Ambiente
+
+sec_entrada : secuencia de enteros
+sec_salida : secuencia de caracteres
+
+v_ent : enteros
+v_sal : caracteres
+
+Proceso
+
+ARR(sec_entrada)
+AVZ(sec_entrada, v_ent)
+CREAR(sec_salida)
+
+
+
+Fin Acción
