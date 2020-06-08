@@ -1,0 +1,31 @@
+# ACTIVIDAD 2.1.7 -> https://aed-frre.github.io/practica/2.1/#ejercicio-217
+# Incompleto 8/6
+Acción CUIT Es
+
+Ambiente
+
+sec_cuit : secuencia de enteros
+sec_salida : secuencia de enteros # termina 0, 1, 2 o 3.
+
+v_cuit : enteros
+PERMITIDO = {0, 1, 2, 3}
+
+Proceso
+
+ARR(sec_cuit)
+AVZ(sec_cuit, v_cuit)
+CREAR(sec_salida)
+
+Mientras NFDS(sec_cuit) hacer # o (v_cuit <> 0)
+    // avanza dos numeros
+    ult_dig := (v_cuit MOD 100) DIV 10 # Lo que hace es obtener los últimos dos dígitos, luego se obtiene el primer dígito. El cual es el último del DNI.
+    Si (ult_dig en PERMITIDO) entonces
+        ESC(sec_salida, v_cuit)
+    Fin Si
+    AVZ(sec_cuit, v_cuit)
+Fin Mientras
+
+CERRAR(sec_cuit)
+CERRAR(sec_salida)
+
+Fin Acción
