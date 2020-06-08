@@ -1,0 +1,24 @@
+// ACTIVIDAD #2.1.6
+
+Acción HABITANTES es
+    
+Ambiente
+
+sec_hab : secuencia de enteros
+v_hab : enteros
+
+cont_total, cont_menores, cont_men_h, cont_men_m, cont_mayores, cont_may_h, cont_may_m : enteros
+
+
+Proceso
+
+ARR(sec_hab)
+AVZ(sec_hab, v_hab)
+
+Mientras NFDS(sec_hab) hacer
+    Si (v_hab = '18') entonces
+        
+    Fin Si
+Fin Mientras   
+
+Fin Acción

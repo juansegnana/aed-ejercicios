@@ -4,18 +4,25 @@ Acción SOCIOS_FIGURADOS es
     
 Ambiente
 
-sec_socios : secuencia de caracteres
-v_socios : caracteres
+sec_socios : secuencia de enteros
+sec_salida : secuencia de enteros
+v_socios : enteros
+contador_socios := 0
 
 Proceso
 ARR(sec_socios)
 AVZ(sec_socios, v_socios)
+contador_socios := 0
 
 Mientras NFDS(sec_socios) hacer
-
+    Si (contador_socios <> v_socios) entonces
+        ESC(sec_salida, contador_socios)
+    Fin Si
     AVZ(sec_socios, v_socios)
+    contador_socios := contador_socios + 1
 Fin Mientras
 
 CERRAR(sec_socios)
+CERRAR(sec_salida)
 
 Fin Acción
