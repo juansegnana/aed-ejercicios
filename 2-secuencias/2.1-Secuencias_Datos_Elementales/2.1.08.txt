@@ -10,12 +10,56 @@ sec_salida : secuencia de caracteres
 v_ent : enteros
 v_sal : caracteres
 
+PERMITIDO = {0, 1, 2, 3}
+
 Proceso
 
 ARR(sec_entrada)
 AVZ(sec_entrada, v_ent)
 CREAR(sec_salida)
 
+Mientras NFDS(sec_entrada) hacer
+    ult_dig := (v_ent MOD 100) DIV 10
+    Si (ult_dig en PERMITIDO) entonces
+        validacion := v_ent
+        Para (i:= 1, hasta 10) hacer
+            dig_cuit := validacion DIV 10**(11-i)
+            SEGÚN (dig_cuit) HACER
+                0: v_sal := '0'
+                1: v_sal := '1'
+                2: v_sal := '2'
+                3: v_sal := '3'
+                4: v_sal := '4'
+                5: v_sal := '5'
+                6: v_sal := '6'
+                7: v_sal := '7'
+                8: v_sal := '8'
+                9: v_sal := '9'
+            FIN SEGÚN
+            ESC(sec_salida, v_sal)
+            validacion := validacion MOD 10**(11-i)
+        Fin Para
 
+        SEGÚN (validacion) HACER
+            0: v_sal:= '0'
+            1: v_sal:= '1'
+            2: v_sal:= '2'
+            3: v_sal:= '3'
+            4: v_sal:= '4'
+            5: v_sal:= '5'
+            6: v_sal:= '6'
+            7: v_sal:= '7'
+            8: v_sal:= '8'
+            9: v_sal:= '9'
+        FIN SEGÚN
+
+        ESC(sec_salida, v_sal)
+        ESC(sec_salida, '-')
+    Fin Si
+    
+    AVZ(sec_entrada, v_ent)
+Fin Mientras
+
+CERRAR(sec_entrada); CERRAR(sec_salida)
 
 Fin Acción
