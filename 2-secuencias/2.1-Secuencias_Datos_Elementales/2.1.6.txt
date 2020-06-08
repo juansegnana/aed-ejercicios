@@ -1,4 +1,4 @@
-// ACTIVIDAD #2.1.6
+// ACTIVIDAD #2.1.6 -> https://aed-frre.github.io/practica/2.1/#ejercicio-216 
 
 Acción HABITANTES es
     
@@ -7,18 +7,35 @@ Ambiente
 sec_hab : secuencia de enteros
 v_hab : enteros
 
-cont_total, cont_menores, cont_men_h, cont_men_m, cont_mayores, cont_may_h, cont_may_m : enteros
-
+pobl_total, cont_menores, cont_mayores, pobl_total : enteros
+porc_mayores, porc_menores : reales
 
 Proceso
 
 ARR(sec_hab)
 AVZ(sec_hab, v_hab)
 
+cont_mayores := 0; cont_menores := 0; pobl_total:= 0; 
+
 Mientras NFDS(sec_hab) hacer
-    Si (v_hab = '18') entonces
-        
+    Si (v_hab < '18') entonces
+         cont_menores := cont_menores + 1
+    SINO
+        Si (v_hab >= '18') entonces
+            cont_mayores := cont_mayores + 1
+        Fin Si
     Fin Si
-Fin Mientras   
+    AVZ(sec_hab, v_hab)
+Fin Mientras
+
+pobl_total := (cont_mayores + cont_mayores)
+porc_menores := (cont_menores * 100)/pobl_total
+porc_mayores := (cont_mayores * 100)/pobl_total
+
+ESC('Población total:', pobl_total)
+ESC('Porcentaje menores de 18 años:', porc_menores, '%')
+ESC('Porcentaje mayores de 18 años:', porc_mayores, '%')
+
+CERRAR(sec_hab)
 
 Fin Acción
