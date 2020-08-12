@@ -1,0 +1,103 @@
+Acción ACT_UNITARIA_2.2.19 ES
+
+AMBIENTE
+
+  FECHA = Registro
+    aa: N(4);
+    mm: 1..12;
+    dd: 1..31;
+  FReg;
+
+  CLAVE = Registro
+    farmacia: AN(2);
+    medicamento: AN(5);
+  FReg;
+  
+  /* Reg maestro */
+  MAE = Registro
+    clave = CLAVE;
+    cant_actual: N(6);
+    fecha-vence: FECHA;
+  FReg;
+
+  a_mae, a_sal: Archivo de MAE ordenado por clave;
+  reg_mae, reg_sal: MAE;
+
+  MOV = Registro
+    clave = CLAVE;
+    cod_mod: 1..3;
+    cant_recibida: N(6);
+  FReg;
+
+  a_mov: Archivo de MOV ordenado por clave, cod_mod;
+  reg_mov: MOV;
+
+  VENCIDOS = Registro
+    medicamento : N(5);
+    cant_vencida : N(6);
+  FReg;
+
+  a_ven : Archivo de VENCIDOS ordenado por medicamento;
+  reg_ven : VENCIDOS;
+
+  // PROCEDIMIENTOS
+  procedimiento LEER_MAE es
+    LEER(a_mae, reg_mae);
+    SI FDA(a_mae) ENTONCES
+      reg_mae.clave := HV;
+    FSi;
+  FPro;
+
+  procedimiento LEER_MOV es
+    LEER(a_mov, reg_mov);
+    SI FDA(a_mov) ENTONCES
+      reg_mov.clave := HV;
+    FSi;
+  FPro.
+
+PROCESO
+  ABRIR E/(a_mae); ABRIR E/(a_mov);
+  ABRIR /S(a_sal); ABRIR /S(a_ven);
+  LEER_MAE; LEER_MOV;
+
+  MIENTRAS (a_mae.clave <> HV) Y (a_mov.clave <> HV) HACER
+    
+    SI (reg_mae.clave < reg_mov.clave) ENTONCES
+      reg_sal := reg_mae;
+      ESC(a_sal, reg_sal);
+      LEER_MAE;
+    SINO
+      SI (reg_mae.clave = reg_mov.clave) ENTONCES
+        SEGÚN (reg_mov.cod_mod) HACER
+          1:
+            ESC('Error: alta invalida');
+            reg_sal := reg_mae;
+            ESC(a_sal, reg_sal);
+          2:
+            reg_ven.medicamento := reg_mae.clave.medicamento;
+            reg_ven.cant_vencida := reg_mae.cant_actual;
+            ESC(a_ven, reg_ven);
+          3:
+            reg_sal := reg_mae;
+            reg_sal.cant_actual := reg_mov.cant_recibida;
+            ESC(a_sal, reg_sal); 
+        FSegun;      
+        LEER_MAE; LEER_MOV;
+      SINO
+        SI (reg_mae.clave > reg_mov.clave) ENTONCES
+          SEGÚN (reg_mov.cod_mod) HACER
+            1:
+              reg_sal.clave := reg_mov.clave;
+              reg_sal.cant_actual := reg_mov.cant_recibida;
+              reg_sal.vence := FECHA_ACTUAL() + 30;
+              ESC(a_sal, reg_sal);
+            2: ESC('Error: baja inválida.');
+            3: ESC('Error: modificación inválida.');
+          FSegun;
+          LEER_MOV;
+        FSi;
+      FSi;
+    FSi;
+  FMientras;
+  CERRAR(a_mae); CERRAR(a_mov); CERRAR(a_sal); CERRAR(a_ven);
+Fin Acción.

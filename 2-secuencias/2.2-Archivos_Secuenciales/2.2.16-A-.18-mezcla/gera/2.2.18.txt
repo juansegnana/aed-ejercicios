@@ -1,0 +1,97 @@
+Ejercicio 2.2.18
+Un supermercado desea conocer la totalidad de unidades existentes de cada artículo 
+a fin de hacer un control de stock y decidir si se deben comprar nuevas unidades o
+ redistribuir la mercadería existente.
+
+El supermercado posee dos sucursales, cada una de las cuales envió su
+ información en un fichero con el siguiente formato:
+
+ARTICULOS
+
+SUC 1:												SUC 2:
+Cod_Prod/TipoMarca/Descripción/Cant_Unidades  -- Cod_Prod/TipoMarca/Descripción/Cant_Unidades
+
+Escribir un algortimo que permita obtener un único fichero de salida,
+ con el mismo formato, que contenga la información solicitada y además, 
+ emita un listado con los siguientes datos:
+
+Cod_Prod	Tipo	Marca	Descripción	Cant_Suc_1	Cant_Suc_2	Total_Unidades
+
+Accion Super Es 
+ Ambiente 
+
+ 	productos = registro de
+
+ 		cod:n(8)
+ 		TipoMarca:an(20)
+ 		desc:an(200)
+ 		cant:n(10)
+
+ 	fin registro
+
+ 	Variables
+ 	arA,arB,arSal: archivo de productos
+ 	a,b,s:productos
+ 	total:entero
+
+ 	Constantes
+
+ 	Funciones
+
+ 	Procedimientos
+
+ 	procedimiento LeerA
+ 	 leer(arA,a)
+ 	 Si FDA(arA) Entonces // imprimo el total
+ 	 	esc(a.cod,'/',a.Tipo,'/',a.TipoMarca,'/',a.desc,'/',a.cant,'/','0/',total)
+ 	 	arA.cod:=HV
+ 	 Fin Si
+ 	procedimiento LeerB
+ 	 leer(arB,b)
+ 	 Si FDA(arB) Entonces
+ 	 	esc(b.cod,'/',b.Tipo,'/',b.TipoMarca,'/',b.desc,'/0/',b.cant,'/',total)
+ 	 	arB.cod:=HV
+ 	 Fin Si
+
+ Proceso 
+ 	AbrirE/(arA)
+ 	AbrirE/(arB)
+ 	AbrirS/(arSal) // abierto para escritura 
+ 	LeerA
+ 	LeerB
+ 	total:=0 //acumulador de total
+
+ 	Esc(Cod_Prod/Tipo/Marca/Descripción/Cant_Suc_1/Cant_Suc_2/Total_Unidades)
+
+ 	Mientras (arA<>HV) o (arB<>HV) hacer
+
+ 		Si ArA<ArB Entonces 
+ 			s:=a
+ 			esc(arA,s)
+ 			esc(a.cod,'/',a.Tipo,'/',a.TipoMarca,'/',a.desc,'/',a.cant,'/','0/')
+ 			total:=total+a.cant
+ 			LeerA
+ 		Sino
+ 			Si ArA = ArB Entonces
+ 				s:=a
+ 				esc(arA,s)
+ 				esc(a.cod,'/',a.Tipo,'/',a.TipoMarca,'/',a.desc,'/',a.cant,'/',b.cant,'/')
+ 				total:=total+a.cant
+ 				LeerA
+ 				
+ 			Sino 
+ 				s:=b
+ 				esc(arB,s)
+ 				esc(b.cod,'/',b.Tipo,'/',b.TipoMarca,'/',b.desc,'/0/',b.cant,'/')
+ 				total:=total+b.cant
+ 				LeerB
+ 			Fin SI
+ 		Fin SI
+
+ 	Fin Mientras
+
+ 	cerrar(arA)
+ 	cerrar(arB)
+ 	cerrar(arSal)
+
+Fin accion

@@ -1,0 +1,110 @@
+Acción UTNBook ES
+Ambiente
+
+  FECHA = Registro
+    dia : (1..31);
+    mes : (1..12);
+    año : N(4);
+  FReg;
+  
+  CLAVE = Registro
+    cod_usuario : N(6);
+    cod_amigo : N(4);
+  FReg;
+
+  AMIGOS = Registro
+    clave : CLAVE;
+    fecha_amistad : FECHA;
+    mensaje_muro : AN(256);
+    marca_baja : AN(1);
+  FReg;
+
+  a_amigos, a_sal : Archivo de AMIGOS ordenado por clave;
+  reg_amigos, reg_sal : AMIGOS;
+
+  NOTIFICACIONES = Registro
+    clave : CLAVE;
+    cod_mov : ('A', 'M', 'B');
+    fecha_amistad : FECHA;
+    mensaje_muro : AN(256);
+  FReg;
+
+  a_notif : Archivo de NOTIFICACIONES ordenado por clave;
+  reg_notif : NOTIFICACIONES;
+
+  procedimiento LEER_MAE es
+    LEER(a_amigos, reg_amigos);
+    SI FDA(a_amigos) ENTONCES
+      reg_amigos.clave := HV;
+    FSi;
+  Fproc;
+
+  procedimiento LEER_MOV es
+    LEER(a_notif, reg_notif);
+    SI FDA(a_notif) ENTONCES
+      reg_notif.clave := HV;
+    FSi;
+  Fproc;
+
+  procedimiento LEER_AMBOS es
+    LEER_MAE; LEER_MOV;
+  Fproc;
+
+  procedimiento AGREGAR_AMIGO es
+    reg_sal.cod_usuario := reg_notif.cod_usuario;
+    reg_sal.cod_amigo := reg_notif.cod_amigo;
+    reg_sal.fecha_amistad := reg_notif.fecha_amistad;
+    reg_sal.mensaje_muro := reg_notif.mensaje_muro;
+    ESC(a_sal, reg_sal);
+  Fproc;
+
+  procedimiento MODIFICAR_MENSAJE es
+    reg_sal := reg_amigos;
+    reg_sal.mensaje_muro := reg_notif.mensaje_muro;
+    ESC(a_sal, reg_sal);
+  Fproc;
+
+  procedimiento BORRAR_AMIGO es
+    reg_amigos.marca_baja := '*';
+    // ??
+  Fproc;
+
+  procedimiento ERROR_MOV(msj: alfanumérico) es
+    ESC('ERROR: movimiento ', msj, ' inválido.');
+    reg_sal := reg_amigos;
+    ESC(a_sal, reg_sal);
+  Fproc;
+
+Proceso
+  ABRIR E/(a_amigos); ABRIR E/(a_notif);
+  ABRIR /S(a_sal);
+  LEER_AMBOS;
+
+  MIENTRAS (a_amigos.clave <> HV) o (a_notif.clave <> HV) HACER
+    SI (a_amigos.clave < a_notif.clave) ENTONCES
+      reg_sal := reg_amigos;
+      ESC(a_sal, reg_sal);
+      LEER_MAE;
+    FSi;
+    
+    SI (a_amigos.clave = a_notif.clave) ENTONCES
+      SEGÚN (a_sal.cod_mov) HACER
+        'A': ERROR_MOV('alta');
+        'M': MODIFICAR_MENSAJE;
+        'B': BORRAR_AMIGO;
+      FSeg;
+      LEER_AMBOS;
+    FSi;
+
+    SI (a_amigos.clave > a_notif.clave) ENTONCES
+      SEGÚN (a_sal.cod_mov) HACER
+        'A': AGREGAR_AMIGO;
+        'M': ERROR_MOV('modificación');
+        'B': ERROR_MOV('baja');
+      FSeg;
+      LEER_MOV;
+    FSi;
+  FMientras;
+
+  CERRAR(a_amigos); CERRAR(a_notif); CERRAR(a_sal);
+Fin_Acción.

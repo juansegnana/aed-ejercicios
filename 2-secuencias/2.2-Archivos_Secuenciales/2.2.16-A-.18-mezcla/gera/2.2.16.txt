@@ -1,0 +1,79 @@
+Ejercicio 2.2.16 
+Construir un algoritmo que a partir de un fichero de películas nuevas conteniendo:
+
+PELICULAS_NUEVAS Ordenado por Nro_Pelicula
+
+Nro_Pelicula/Titulo/Genero/Cant_Copias/Fecha_Estreno		Nro_Pelicula/Titulo/Genero/Cant_Copias/Fecha_Estreno
+3 																 5
+2 																 9
+3 																 10
+4 																 11
+y otro fichero de peliculas existentes, ambos ordenados por película,
+
+PELICULAS Ordenado por Nro_Pelicula
+
+Nro_Pelicula`Titulo`Genero`Cant_Copias`Fecha_Estreno
+
+Genere un único archivo (con el mismo formato de los ficheros de entrada) que contenga todas las peliculas.
+ Considerar que hay un solo registro por película y no se repiten entre ficheros.
+
+Accion PELISXD ES
+
+ Ambiente
+ 	fecha = registro de
+ 		day:n(2)
+ 		week:n(2)
+ 		year:n(4)
+ 	fin registro
+
+ 	pelicula = registro de
+ 		nro:N(4);
+ 		titulo:an(20);
+ 		genero:('M','F');
+ 		cant:n(4)
+ 		Fecha:fecha
+ 	fin registro
+
+ 	Variables
+ 		archA,archB,archsal;archivo de pelicula
+ 		a,b,s:pelicula
+
+ 	Constantes
+
+ 	Funciones
+
+ 	Procedimientos
+
+ 	Procedimiento archA
+ 		leer(archA,A)
+ 		Si FDA(archA) Entonces
+ 			archA.nro:=HV;
+ 		Fin SI
+    Fin Procedimiento
+
+     Procedimiento archB
+ 		leer(archB,B)
+ 		Si FDA(archB) Entonces
+ 			archB.nro:=HV;
+ 		Fin SI
+    Fin Procedimiento
+
+ Proceso
+ 	Abrir E/(archB);
+ 	Abrir E/(archA);
+ 	Leer_ArchA;
+ 	Leer_ArchB;
+
+ 	Mientras (archA<>HV) o (archB<>HV) Hacer
+ 		Si archA.nro < archB.nro Entonces
+ 			s:=archA.nro;
+ 			Esc(archsal,s);
+ 			Leer_ArchA
+ 		Sino
+ 			s:=archB.nro;
+ 			Esc(archsal,s);
+ 			Leer_ArchB
+ 		Fin SI
+ 	Fin Mientras
+
+Fin Accion // ESTO ES UN CICLO INCLUYENTE
