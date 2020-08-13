@@ -76,7 +76,7 @@ Ambiente
     Proceso
       reg_sal := reg_cliente;
       nuevaCantLecturas := reg_cliente.cant_lecturas + 1;
-      nuevoPromedio := (reg_cliente.prom_lecturas + reg_med.consumo)/(nuevaCantLecturas);
+      nuevoPromedio := ((reg_cliente.prom_lecturas*reg_cliente.cant_lecturas) + reg_med.consumo)/(nuevaCantLecturas);
       
       tipo_consumidor := determinarTipoConsumidor(nuevoPromedio);
 
