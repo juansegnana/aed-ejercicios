@@ -74,7 +74,7 @@ Ambiente
     reg_sal := reg_amigos;
     ESC(a_sal, reg_sal);
   Fproc;
-
+  
 Proceso
   ABRIR E/(a_amigos); ABRIR E/(a_notif);
   ABRIR /S(a_sal);

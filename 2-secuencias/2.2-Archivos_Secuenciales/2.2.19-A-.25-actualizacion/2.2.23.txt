@@ -1,0 +1,143 @@
+Acción 2.2.23 es
+
+Ambiente
+
+  FECHA = Registro
+    dia : (1..31);
+    mes : (1..12);
+    año : N(4);
+  FReg;
+
+  FECHA_INCLUSIVE : FECHA; 
+
+  # maestro
+  CLIENTE = Registro
+    id_casa : N(4);
+    fecha_ult_lectura : FECHA;
+    cant_lecturas : N(5);
+    prom_lecturas : N(5,2);
+    tipo_consumidor : ('A'..'C');
+  FReg;
+
+  a_cliente, a_sal : Archivo de CLIENTE ordenado por id_casa;
+  reg_cliente, reg_sal : CLIENTE;
+
+  MEDICIONES = Registro
+    id_casa : N(4);
+    fecha_medicion : FECHA;
+    consumo : N(9);
+  FReg;
+
+  a_med : Archivo de MEDICIONES ordenado por id_casa;
+  reg_med : MEDICIONES;
+
+  función determinarTipoConsumidor(consumo : N(5)):AN(1) es
+    Ambiente
+      respuesta : AN(1);
+    Proceso
+      SEGÚN (consumo) HACER
+        <20000: respuesta := 'A';
+        <40000: respuesta := 'B';
+        >=40000: respuesta := 'C';
+      FSeg;
+      determinarTipoConsumidor := respuesta;
+  Ffunción;
+
+  procedimiento LEER_MAE es
+    LEER(a_cliente, reg_cliente);
+    SI FDA(a_cliente) ENTONCES
+      reg_cliente.clave := HV;
+    FSi;
+  Fproc;
+
+  procedimiento LEER_MOV es
+    LEER(a_med, reg_med);
+    SI FDA(a_med) ENTONCES
+      reg_med.clave := HV;
+    FSi;
+  Fproc;
+
+  procedimiento LEER_AMBOS es
+    LEER_MAE; LEER_MOV;
+  Fproc;
+
+  procedimiento ESTABLECER_MES_INCLUSIVE es
+    # MES INCLUSIVE.
+    FECHA_INCLUSIVE.dia := 31;
+    FECHA_INCLUSIVE.mes := 1;
+    FECHA_INCLUSIVE.año := 2015;
+  Fproc;
+
+  procedimiento ACTUALIZAR_CAMPOS es
+    Ambiente
+      tipo_consumidor : AN(1);
+      nuevoPromedio : N(5,2);
+      nuevaCantLecturas : N(5);
+    Proceso
+      reg_sal := reg_cliente;
+      nuevaCantLecturas := reg_cliente.cant_lecturas + 1;
+      nuevoPromedio := (reg_cliente.prom_lecturas + reg_med.consumo)/(nuevaCantLecturas);
+      
+      tipo_consumidor := determinarTipoConsumidor(nuevoPromedio);
+
+      SI no(reg_cliente.tipo_consumidor = tipo_consumidor) ENTONCES
+        reg_sal.tipo_consumidor := tipo_consumidor;
+      FSi;
+
+      reg_sal.fecha_ult_lectura := reg_med.fecha_medicion;
+      reg_sal.prom_lecturas := nuevoPromedio;
+      reg.sal.cant_lecturas := nuevaCantLecturas;
+
+      ESC(a_sal, reg_sal);
+  Fproc;
+
+  procedimiento CONEXION_NUEVA es
+    reg_sal := reg_cliente;
+
+    reg_sal.id_casa := reg_med.id_casa;
+    reg_sal.fecha_ult_lectura := reg_med.fecha_medicion;
+    reg_sal.cant_lecturas := 1;
+    reg_sal.prom_lecturas := reg_med.consumo;
+    reg_sal.tipo_consumidor := determinarTipoConsumidor(reg_med.consumo);
+
+    ESC(a_sal, reg_sal);
+  Fproc;
+
+  procedimiento ABRIR_TODO es
+    ABRIR E/(a_cliente); ABRIR E/(a_med); ABRIR /S(a_sal);
+  Fproc;
+
+  procedimiento CERRAR_TODO es
+    CERRAR(a_cliente); CERRAR(a_med); CERRAR(a_sal);
+  Fproc;
+
+Proceso
+  ABRIR_TODO;
+  LEER_AMBOS;
+  ESTABLECER_MES_INCLUSIVE;
+
+  MIENTRAS (a_cliente.id_casa <> HV) o (a_med.id_casa <> HV) HACER
+    SI (a_cliente.fecha_ult_lectura <= FECHA_INCLUSIVE) ENTONCES
+
+      SI (a_cliente.id_casa < a_med.id_casa) ENTONCES
+        reg_sal := reg_cliente;
+        ESC(a_sal, reg_sal);
+        LEER_MAE;
+      FSi;
+
+      SI (a_cliente.id_casa = a_med.id_casa) ENTONCES
+        # Actualizar
+        ACTUALIZAR_CAMPOS;
+        LEER_AMBOS;
+      FSi;
+
+      SI (a_cliente.id_casa > a_med.id_casa) ENTONCES
+        # ID nueva
+        CONEXION_NUEVA;
+        LEER_MOV;
+      FSi;
+
+    FSi;
+  FMientras;
+  CERRAR_TODO;
+Fin Acción
