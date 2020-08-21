@@ -1,0 +1,72 @@
+// Juan Segnana
+Acción 2.3.1a ES
+Ambiente
+
+  msg_nro, msg_total_facturado, msg_cant_facturas : N(4);
+  msg_nombre : AN(30);
+
+  FECHA = Registro
+    año: N(4);
+    mes: (1..12);
+    dia: (1..31);
+  fin-registro
+
+  FACTURAS = Registro
+    nro_cliente: N(4);
+    nro_factura: N(4);
+    fecha: FECHA;
+    importe: N(9);
+  fin-registro
+
+  a_facturas : Archivo de FACTURAS ordenado por nro_cliente, nro_factura;
+  reg_facturas : FACTURAS;
+
+  CLIENTES = Registro
+    nro_cliente: N(4);
+    nombre: AN(80);
+    dni: N(8);
+    cuit: N(10);
+    domicilio: AN(10);    
+  fin-registro
+
+  a_clientes : Archivo de CLIENTES indexado por nro_cliente;
+  reg_clientes : CLIENTES; 
+
+  procedimiento REINICIAR_TEMP es
+    msg_total_facturado := 0;
+    msg_cant_facturas := 0;
+  fin-procedimiento
+
+Proceso
+  Abrir E/(a_facturas); Abrir E/(a_clientes);
+  Leer(a_facturas, reg_facturas);
+  REINICIAR_TEMP;
+
+  ESC("Nro. Cliente | Nombre Cliente | Total facturado. | Cantidad de facturas");
+  
+  mientras NFDA(a_facturas) hacer
+    REINICIAR_TEMP;
+    nro := reg_facturas.nro_cliente
+    reg_clientes.nro_cliente := reg_facturas.nro_cliente;
+    Leer(a_clientes, reg_clientes);
+
+    si (a_facturas.nro_cliente EXISTE) entonces
+      Mientras (nro = reg_facturas.nro_cliente) hacer
+        msg_nro := a_clientes.nro_cliente;
+        msg_nombre := a_facturas.nombre;
+        msg_total_facturado := msg_total_facturado + a_facturas.importe;
+        msg_cant_facturas := msg_cant_facturas + 1;
+        Leer(a_facturas, reg_facturas);
+      Fin-Mientras
+      // Mensaje por pantalla
+      ESC( msg_nombre, msg_nombre, msg_total_facturad, msg_cant_facturas );
+    sino
+      ESC("Error. Nro_cliente no existe.");
+      Mientras NFDA(a_clientes) y (nro = reg_facturas.nro_cliente) hacer
+        Leer(a_facturas, reg_facturas);
+      fin-mientras
+    fin-si
+  fin-mientras
+  
+  Cerrar (a_clientes); Cerrar (a_facturas);
+Fin Acción.

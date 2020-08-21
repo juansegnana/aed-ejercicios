@@ -1,0 +1,69 @@
+// Juan Segnana
+Acción 2.3.3 ES
+Ambiente
+
+  ing_patente : AN(7);
+  salir_opc : Logico;
+
+  PEAJE = Registro
+    patente: AN(7);
+    fecha : N(4);
+    ult_hora : N(4);
+    costo : N(3,2);
+  fin-registro
+
+  a_peaje : Archivo de PEAJE indexado por patente, fecha;
+  reg_peaje : PEAJE;
+
+  CAT_1 = 1.20;
+  CAT_2 = 2.50;
+  CAT_3 = 4.00;
+  CAT_4 = 5.00;
+  
+  procedimiento DEBE_PAGAR es
+    Ambiente  
+      resp : N(3,2);
+      Proceso
+      SEGÚN (categoria) HACER
+        1: resp := CAT_1;
+        2: resp := CAT_2;
+        3: resp := CAT_3;
+        4: resp := CAT_4;
+      Fin-segun
+      
+      reg_peaje.patente := ing_patente;
+      reg_peaje.fecha := FECHA_ACTUAL();
+      reg_peaje.ult_hora := HORA_ACTUAL();
+      reg_peaje.costo := resp;
+      GRABAR(a_peaje, reg_peaje);
+      
+      ESC("Importe a pagar : $", resp);
+
+  fin-procedimiento
+
+Proceso
+  Abrir E/S(a_peaje);
+
+  REPETIR
+    ESC("Ingrese patente");
+    Leer(ing_patente);
+    fecha_consulta := FECHA_ACTUAL();
+
+    reg_peaje.patente := ing_patente;
+    reg_peaje.fecha := fecha_consulta;
+    Leer(a_peaje, reg_peaje);
+
+    SI EXISTE ENTONCES
+      ESC("No debe pagar peaje.")
+      reg_peaje.ult_hora := HORA_ACTUAL();
+      RE-GRABAR(a_peaje, reg_peaje);
+    SINO
+      ESC("Ingrese categoria");
+      Leer(ing_categoria);
+      DEBE_PAGAR;
+    FIN-SI
+    ESC("¿Salir?");
+    Leer(salir_opc);
+  HASTA QUE (salir_opc)
+
+Fin Acción.

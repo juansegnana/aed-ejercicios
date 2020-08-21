@@ -2,9 +2,9 @@ Acción UTNBook ES
 Ambiente
 
   FECHA = Registro
-    dia : (1..31);
-    mes : (1..12);
     año : N(4);
+    mes : (1..12);
+    dia : (1..31);
   FReg;
   
   CLAVE = Registro
@@ -71,8 +71,8 @@ Ambiente
 
   procedimiento ERROR_MOV(msj: alfanumérico) es
     ESC('ERROR: movimiento ', msj, ' inválido.');
-    reg_sal := reg_amigos;
-    ESC(a_sal, reg_sal);
+    #reg_sal := reg_amigos;
+    #ESC(a_sal, reg_sal);
   Fproc;
   
 Proceso
@@ -85,24 +85,24 @@ Proceso
       reg_sal := reg_amigos;
       ESC(a_sal, reg_sal);
       LEER_MAE;
-    FSi;
-    
-    SI (a_amigos.clave = a_notif.clave) ENTONCES
-      SEGÚN (a_sal.cod_mov) HACER
-        'A': ERROR_MOV('alta');
-        'M': MODIFICAR_MENSAJE;
-        'B': BORRAR_AMIGO;
-      FSeg;
-      LEER_AMBOS;
-    FSi;
-
-    SI (a_amigos.clave > a_notif.clave) ENTONCES
-      SEGÚN (a_sal.cod_mov) HACER
-        'A': AGREGAR_AMIGO;
-        'M': ERROR_MOV('modificación');
-        'B': ERROR_MOV('baja');
-      FSeg;
-      LEER_MOV;
+    SINO
+      SI (a_amigos.clave = a_notif.clave) ENTONCES
+        SEGÚN (a_sal.cod_mov) HACER
+          'A': ERROR_MOV('alta');
+          'M': MODIFICAR_MENSAJE;
+          'B': BORRAR_AMIGO;
+        FSeg;
+        LEER_AMBOS;
+        SINO
+          SI (a_amigos.clave > a_notif.clave) ENTONCES
+                SEGÚN (a_sal.cod_mov) HACER
+                  'A': AGREGAR_AMIGO;
+                  'M': ERROR_MOV('modificación');
+                  'B': ERROR_MOV('baja');
+                FSeg;
+                LEER_MOV;
+          FSi;
+      FSi;
     FSi;
   FMientras;
 

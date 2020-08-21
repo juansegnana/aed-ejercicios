@@ -3,9 +3,9 @@ Acción 2.2.23 es
 Ambiente
 
   FECHA = Registro
-    dia : (1..31);
-    mes : (1..12);
     año : N(4);
+    mes : (1..12);
+    dia : (1..31);
   FReg;
 
   FECHA_INCLUSIVE : FECHA; 
@@ -41,32 +41,32 @@ Ambiente
         >=40000: respuesta := 'C';
       FSeg;
       determinarTipoConsumidor := respuesta;
-  Ffunción;
+  Ffunción
 
   procedimiento LEER_MAE es
     LEER(a_cliente, reg_cliente);
     SI FDA(a_cliente) ENTONCES
       reg_cliente.clave := HV;
     FSi;
-  Fproc;
+  Fproc
 
   procedimiento LEER_MOV es
     LEER(a_med, reg_med);
     SI FDA(a_med) ENTONCES
       reg_med.clave := HV;
     FSi;
-  Fproc;
+  Fproc
 
   procedimiento LEER_AMBOS es
     LEER_MAE; LEER_MOV;
-  Fproc;
+  Fproc
 
   procedimiento ESTABLECER_MES_INCLUSIVE es
     # MES INCLUSIVE.
     FECHA_INCLUSIVE.dia := 31;
     FECHA_INCLUSIVE.mes := 1;
     FECHA_INCLUSIVE.año := 2015;
-  Fproc;
+  Fproc
 
   procedimiento ACTUALIZAR_CAMPOS es
     Ambiente
@@ -77,7 +77,7 @@ Ambiente
       reg_sal := reg_cliente;
       nuevaCantLecturas := reg_cliente.cant_lecturas + 1;
       nuevoPromedio := ((reg_cliente.prom_lecturas*reg_cliente.cant_lecturas) + reg_med.consumo)/(nuevaCantLecturas);
-      
+      # EJ. 5+7+6+5 = (23 / 4) = 5.75 -> 5.75*4 = 23 + 6 = 29 / 5 = 5.8 (nuevoPromedio). 
       tipo_consumidor := determinarTipoConsumidor(nuevoPromedio);
 
       SI no(reg_cliente.tipo_consumidor = tipo_consumidor) ENTONCES
@@ -88,8 +88,8 @@ Ambiente
       reg_sal.prom_lecturas := nuevoPromedio;
       reg.sal.cant_lecturas := nuevaCantLecturas;
 
-      ESC(a_sal, reg_sal);
-  Fproc;
+      GRABAR(a_sal, reg_sal);
+  Fproc
 
   procedimiento CONEXION_NUEVA es
     reg_sal := reg_cliente;
@@ -100,16 +100,16 @@ Ambiente
     reg_sal.prom_lecturas := reg_med.consumo;
     reg_sal.tipo_consumidor := determinarTipoConsumidor(reg_med.consumo);
 
-    ESC(a_sal, reg_sal);
-  Fproc;
+    GRABAR(a_sal, reg_sal);
+  Fproc
 
   procedimiento ABRIR_TODO es
     ABRIR E/(a_cliente); ABRIR E/(a_med); ABRIR /S(a_sal);
-  Fproc;
+  Fproc
 
   procedimiento CERRAR_TODO es
     CERRAR(a_cliente); CERRAR(a_med); CERRAR(a_sal);
-  Fproc;
+  Fproc
 
 Proceso
   ABRIR_TODO;
@@ -121,22 +121,22 @@ Proceso
 
       SI (a_cliente.id_casa < a_med.id_casa) ENTONCES
         reg_sal := reg_cliente;
-        ESC(a_sal, reg_sal);
+        GRABAR(a_sal, reg_sal);
         LEER_MAE;
+      SINO
+        SI (a_cliente.id_casa = a_med.id_casa) ENTONCES
+          # Actualizar
+          ACTUALIZAR_CAMPOS;
+          LEER_AMBOS;
+        SINO
+          SI (a_cliente.id_casa > a_med.id_casa) ENTONCES
+            # ID nueva
+            CONEXION_NUEVA;
+            LEER_MOV;
+          FSi;
+        FSi;
       FSi;
-
-      SI (a_cliente.id_casa = a_med.id_casa) ENTONCES
-        # Actualizar
-        ACTUALIZAR_CAMPOS;
-        LEER_AMBOS;
-      FSi;
-
-      SI (a_cliente.id_casa > a_med.id_casa) ENTONCES
-        # ID nueva
-        CONEXION_NUEVA;
-        LEER_MOV;
-      FSi;
-
+      LEER_AMBOS;
     FSi;
   FMientras;
   CERRAR_TODO;

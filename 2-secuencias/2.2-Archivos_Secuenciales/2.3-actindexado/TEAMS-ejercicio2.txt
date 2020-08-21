@@ -1,0 +1,62 @@
+// Juan Segnana.
+Acción TEAMS-ej2 ES
+Ambiente
+
+  cont_actualizados : N(4);
+  
+  PREGUNTAS = Registro
+    cod_pregunta: N(4);
+    titulo : AN(30);
+    descripcion : AN(56);
+    owner : AN(30);
+    categoria : ("rojo", "verde", "azul", "violeta");
+    resp_correcta : AN(30);
+    resp_incorrecta1 : AN(30);
+    resp_incorrecta2 : AN(30);
+  fin-registro
+  
+  a_preg : Archivo de PREGUNTAS ordenado por cod_pregunta;
+  reg_preg : PREGUNTAS;
+
+  NOVEDADES = Registro
+    cod_pregunta: N(4);
+    nueva_descripcion : AN(56);
+    owner : AN(30);
+    categoria : ("rojo", "verde", "azul", "violeta");
+    new_resp_correcta : AN(30);
+  fin-registro
+
+  a_noved: Archivo de NOVEDADES ordenado por cod_pregunta;
+  reg_noved : NOVEDADES;
+
+  procedimiento CARGAR_DATOS es
+    reg_preg.descripcion := reg_noved.nueva_descripcion;
+    reg_preg.owner := reg_noved.owner;
+    reg_preg.categoria := reg_noved.categoria;
+    reg_preg.resp_correcta := reg_noved.new_resp_correcta;
+  fin-procedimiento
+
+
+Proceso
+  Abrir E/S (a_preg); Abrir E/ (a_noved);
+  Leer(a_noved, reg_noved);
+
+  MIENTRAS NFDA(a_noved) HACER
+    // Pregunta a consultar
+    reg_preg.cod_pregunta := reg_noved.cod_pregunta;
+    Leer(a_preg, reg_preg);
+    Si EXISTE entonces
+      cont_actualizados := cont_actualizados + 1;
+      CARGAR_DATOS;
+      RE-GRABAR(a_preg, reg_preg);
+    Sino
+      // Crear nueva pregunta.
+      CARGAR_DATOS;
+      GRABAR(a_preg, reg_preg);
+    Fin-si
+    Leer(a_noved, reg_noved);
+  FIN-MIENTRAS
+  
+  ESC("En total se actualizaron: ", cont_actualizados, " preguntas.");
+
+Fin Acción.

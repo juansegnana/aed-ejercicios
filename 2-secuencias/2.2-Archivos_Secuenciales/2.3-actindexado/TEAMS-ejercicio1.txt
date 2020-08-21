@@ -1,0 +1,64 @@
+Acción TESTING-ej1 ES
+Ambiente
+
+  FECHA = Registro
+  año: N(4);
+  mes: (1..12);
+  dia: (1..31);
+  fin-registro
+
+  act_id : N(4);
+  act_estado : ("done", "test");
+  act_ultfecha : FECHA;
+  opc_salir : logico;
+  porcentaje : N(3,2);
+
+  PROYECTOS = Registro
+    id_proy : N(4);
+    tipo : ("web", "mob");
+    estado : ("done", "test");
+    fecha_ult_test : FECHA;
+  fin-registro
+  
+  a_proy : Archivo de PROYECTOS indexado por id_proy;
+  reg_proy : PROYECTOS;
+
+Proceso
+  Abrir E/S(a_proy);
+  cont_done := 0;
+
+  REPETIR
+    ESC("Ingrese ID del proyecto");
+    Leer(act_id);
+    reg_proy.id_proy := act_id;
+    Leer(a_proy, reg_proy);
+
+    si EXISTE entonces
+      ESC("Ingrese estado del proyecto");
+      Leer(act_estado);
+      si (reg_proy.estado = 'done') Y (act_estad = 'done') entonces
+        ESC("Test INNECESARIO.");
+      sino
+        si (act_estad = 'done') entonces
+          cont_done := cont_done + 1;
+        fin-si
+        cont_total := cont_total + 1;
+        ESC("Ingrese fecha ult. test: AAAA-MM-DD");
+        Leer(act_ultfecha);
+        reg_proy.estado := act_estado;
+        reg_proy.fecha_ult_test := act_ultfecha;
+        RE-GRABAR(a_proy, reg_proy);
+      fin-si
+    sino
+      ESC("ERROR: ID no existe.")
+    fin-si
+    
+    ESC("¿Salir?");
+    Leer(opc_salir);
+  HASTA QUE (opc_salir)
+  
+  porcentaje := (cont_done * 100) / cont_total;
+  ESC("Del total de actualizaciones, un", porcentaje, "% pasaron de TEST a DONE.");
+  Cerrar(a_proy);
+
+Fin Acción.

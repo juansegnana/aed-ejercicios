@@ -1,0 +1,52 @@
+Acción 2.3.1a ES
+Ambiente
+
+  msg_nro, msg_factura : N(4);
+  msg_nombre : AN(30);
+
+  FECHA = Registro
+    año: N(4);
+    mes: (1..12);
+    dia: (1..31);
+  fin-registro
+
+  FACTURAS = Registro
+    nro_cliente: N(4);
+    nro_factura: N(4);
+    fecha: FECHA;
+    importe: N(9);
+  fin-registro
+
+  a_facturas : Archivo de FACTURAS ordenado por nro_cliente, nro_factura;
+  reg_facturas : FACTURAS;
+
+  CLIENTES = Registro
+    nro_cliente: N(4);
+    nombre: AN(80);
+    dni: N(8);
+    cuit: N(10);
+    domicilio: AN(10);    
+  fin-registro
+
+  a_clientes : Archivo de CLIENTES indexado por nro_cliente;
+  reg_clientes : CLIENTES; 
+
+Proceso
+  Abrir E/(a_facturas); Abrir E/(a_clientes);
+  Leer(a_facturas, reg_facturas);
+
+  ESC("Nro. Cliente | Nombre Cliente | Número Factura.");
+  mientras NFDA(a_facturas) hacer
+    si (a_clientes.nro_cliente EXISTE a_facturas.nro_cliente) entonces
+      msg_nro := a_clientes.nro_cliente;
+      msg_nombre := a_facturas.nombre;
+      msg_factura := a_clientes.nro_factura; 
+      ESC( msg_nombre, msg_nombre, msg_factura );
+    sino
+      ESC("Error. Nro_cliente no existe.");
+    fin-si
+    Leer(a_facturas, reg_facturas);
+  fin-mientras
+  
+  Cerrar (a_clientes); Cerrar (a_facturas);
+Fin Acción.
