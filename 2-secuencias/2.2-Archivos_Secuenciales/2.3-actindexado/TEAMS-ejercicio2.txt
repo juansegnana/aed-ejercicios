@@ -1,3 +1,9 @@
+EJERCICIO
+Te contratan en la empresa proveedora del juego PREGUNTADOS. Tu primer trabajo consiste en actualizar un archivo de preguntas, en función a nuevos datos que surgen como propuesta de jugadores.
+Para ello te facilitan dos archivos. Uno de PREGUNTAS, indexado por código de pregunta, que además contiene los siguientes datos: Titulo (AN), Descripción (AN), Owner (AN), Categoria (Rojo, Verde, Azul, Violeta) (C), Respuesta Correcta (AN), Respuesta Incorrecta 1 (AN), Respuesta Incorrecta 2 (AN). Y un archivo de NOVEDADES, ordenado por código de pregunta, que contiene además: Nueva Descripción (AN), Owner (AN), , Verde, Azul, Violeta) (C), Nueva Respuesta Correcta (AN).
+Debes modificar el archivo de PREGUNTAS, actualizando para las preguntas que correspondan los datos corregidos que aparecen en NOVEDADES.
+Informar cuántas preguntas se han actualizado.
+----------------------
 // Juan Segnana.
 Acción TEAMS-ej2 ES
 Ambiente
@@ -15,7 +21,7 @@ Ambiente
     resp_incorrecta2 : AN(30);
   fin-registro
   
-  a_preg : Archivo de PREGUNTAS ordenado por cod_pregunta;
+  a_preg : Archivo de PREGUNTAS indexado por cod_pregunta;
   reg_preg : PREGUNTAS;
 
   NOVEDADES = Registro
@@ -36,6 +42,20 @@ Ambiente
     reg_preg.resp_correcta := reg_noved.new_resp_correcta;
   fin-procedimiento
 
+  procedimiento ACTUALIZAR_DATOS es
+    Si (reg_preg.descripcion <> reg_noved.nueva_descripcion) entonces
+      reg_preg.descripcion := reg_noved.nueva_descripcion;
+    FinSi
+    Si (reg_preg.owner <> reg_noved.owner) entonces
+      reg_preg.owner := reg_noved.owner;
+    FinSi
+    Si (reg_preg.categoria <> reg_noved.categoria) entonces
+      reg_preg.categoria := reg_noved.categoria;
+    FinSi
+    Si (reg_preg.resp_correcta <> reg_noved.new_resp_correcta) entonces
+      reg_preg.resp_correcta := reg_noved.new_resp_correcta;
+    FinSi
+  fin-procedimiento
 
 Proceso
   Abrir E/S (a_preg); Abrir E/ (a_noved);
@@ -47,7 +67,7 @@ Proceso
     Leer(a_preg, reg_preg);
     Si EXISTE entonces
       cont_actualizados := cont_actualizados + 1;
-      CARGAR_DATOS;
+      ACTUALIZAR_DATOS;
       RE-GRABAR(a_preg, reg_preg);
     Sino
       // Crear nueva pregunta.
@@ -58,5 +78,5 @@ Proceso
   FIN-MIENTRAS
   
   ESC("En total se actualizaron: ", cont_actualizados, " preguntas.");
-
+  CERRAR(a_noved); CERRAR(a_preg);
 Fin Acción.

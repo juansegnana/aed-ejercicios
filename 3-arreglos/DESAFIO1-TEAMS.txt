@@ -1,0 +1,40 @@
+Desafíos para resolver con arreglos | TEAMS
+// Juan Segnana
+------------------------------------------------------
+1) Se tiene una serie de 10 códigos de errores más frecuentes. 
+	Se deben mostrar aquéllos que inician en 2, por ser del tipo “graves”. 
+	Cuántos errores de este tipo hay.
+
+
+
+------------------------------------------------------
+
+2) Se han autorizado a 35 estudiantes a cursar una materia. 
+	Realiza un programa que introduzca el nombre y la edad de cada estudiante. 
+	El proceso de lectura de datos terminará cuando se introduzca como nombre un asterisco (*)
+	Al finalizar se mostrará la cantidad de estudiantes mayores de edad.
+
+------------------------------------------------------
+
+3) Queremos guardar la temperatura mínima y máxima de 5 días. 
+	Realiza un algoritmo que informe la siguiente información:
+	-La temperatura media de cada día
+	-Los días con menos temperatura
+Se lee una temperatura por teclado y se muestran los días cuya temperatura máxima coincide con ella. 
+Si no existe ningún día se muestra un mensaje de información.
+
+------------------------------------------------------
+
+4) De una empresa de transporte se quiere guardar el nombre de los conductores que tiene, 
+y los kilómetros que conducen cada día de la semana.
+
+------------------------------------------------------
+
+5) Crear un programa que lea los precios de 5 artículos y las cantidades vendidas por una empresa en sus 4 sucursales. Informar:
+	-Las cantidades totales de cada articulo.
+	-La cantidad de artículos en la sucursal 2.
+	-La cantidad del articulo 3 en la sucursal 1.
+	-La recaudación total de cada sucursal.
+	-La recaudación total de la empresa.
+
+	------------------------------------------------------

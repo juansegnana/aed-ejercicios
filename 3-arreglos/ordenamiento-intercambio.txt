@@ -1,0 +1,21 @@
+Acción INTERCAMBIO ES
+Ambiente
+  
+  a : arreglo[6] de enteros
+  
+Proceso
+  a := [7,1,5,3,2];
+  
+  MIENTRAS No Bandera HACER
+    Bandera:= Verdadero
+    PARA j:=1 a n-1 HACER
+        SI (a[j] < a[j+1]) ENTONCES
+            temp:=a[j]
+            a[j]:=a[j+1]
+            a[j+1]:=temp
+            Bandera:= Falso
+        FIN SI
+    FIN PARA
+FIN MIENTRAS
+  
+Fin Acción.
