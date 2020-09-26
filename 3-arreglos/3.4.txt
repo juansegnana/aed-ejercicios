@@ -1,0 +1,21 @@
+// Juan Segnana
+Acción 3.4 (arreglo : arreglo[50] de entero) ES
+Ambiente
+  i, resto, cont_cumplieron, arregloActual : entero;
+  arregloSalida : arreglo[50] de entero;
+Proceso
+  Mientras (i:=1 hasta 50) hacer
+    arregloActual := arreglo[i];
+    resto := arregloActual MOD 3;
+    Si (resto = 0) entonces
+      cont_cumplieron := cont_cumplieron + 1;
+    Sino
+      arregloSalida[i] := arregloActual;
+      Mientras (resto <> 0) hacer
+        arregloActual := arregloActual + 1;
+        resto := arregloActual MOD 3;
+      FinMientras
+    FinSi
+  FinMientras
+  ESC("Cantidad de números que cumplieron la condición: ", cont_cumplieron);
+Fin Acción.

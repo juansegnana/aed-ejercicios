@@ -1,0 +1,92 @@
+Acción EJERCICIO1-arreglo ES
+Ambiente
+  SOCIOS = Registro
+    nroSocio: N(4);
+    mesCuota: N(2);
+    montoPagado: N(5,2);
+  fin-registro
+  
+  reg_soc : SOCIOS;
+  a_soc : Archivo de SOCIOS
+
+  arreglo : arreglo[1..201, 1..13] de N(5,2);
+
+  pos_socio, pos_mes : entero; 
+  posMesMenor, recaudoMenor : entero;
+  cantNoAbonaron, totalRecaudado : entero;
+  pagado, acumularColumna : N(5,2);
+  alDia : Lógico;
+  
+Proceso
+  Abrir E/(a_soc);
+  Leer(a_soc, reg_soc);
+
+  // iniciar arreglo.
+  Para (i:=1 hasta 201) hacer
+    Para (j:=1 hasta 13) hacer
+      arreglo[i,j] := 0;
+    Fin-para
+  Fin-para
+
+  // cargar arreglo
+  Mientras NFDA(a_soc) hacer
+    // temporales
+    pos_socio := reg_soc.nroSocio;
+    pos_mes := reg_soc.mesCuota;
+    pagado := reg_soc.montoPagado;
+    // poner lo pagado en el mes
+    arreglo[pos_socio, pos_mes] := pagado;
+    // sig. registro
+    Leer(a_soc, reg_soc);
+  Fin-mientras
+  
+  // a) ver si está al dia: revisar cada columna.
+  Para (i:=1 hasta 200) hacer
+    alDia := VERDADERO;
+    Para (j:=1 hasta 12) hacer
+      si (arreglo[i,j] = 0) entonces // no pago
+        alDia := FALSO;
+      fin-si
+    Fin-para
+    si (alDia) entonces
+      ESC("-Socio Nro:", i, "está al día.");
+    fin-si
+  Fin-para
+
+  // b) recorrer cada columna de fila 201.
+  acumularColumna := 0;
+  Para (j:=1 hasta 12) hacer
+    Para (i:=1 hasta 200) hacer
+      acumularColumna := acumularColumna + arreglo[i, j];
+    Fin-para
+    // acumulo total de cada mes.
+    arreglo[201, j] := acumularColumna;
+  Fin-para
+
+  mesMenor := 0;
+  posMesMenor := 0;
+  recaudoMenor := HV;
+  Para (j:=1 hasta 12) hacer
+    Si (arreglo[201, j] < recaudoMenor) entonces
+      mesMenor := arreglo[201, j];
+      posMesMenor := j;
+    Fin-si
+    // voy acumulando total general.
+    arreglo[201, 13] := arreglo[201, 13] + arreglo[201, j];
+  Fin-para
+  // recorrer mes que menos se recaudó y ver cuantos no abonaron
+  cantNoAbonaron := 0;
+  Para (i:= 1 hasta 200) hacer
+    Si (arreglo[i, posMesMenor] = 0) entonces
+      cantNoAbonaron := cantNoAbonaron + 1;
+    Fin-si
+  Fin-para
+
+  ESC("Mes que menos se recaudo: ", posMesMenor, ". Cant. de socios que no abonaron este mes: ", cantNoAbonaron);
+
+  // c) recaudacion total
+  totalRecaudado := arreglo[201, 13];
+  ESC("En total se recaudo $", totalRecaudado);
+
+  Cerrar(a_soc);
+Fin Acción.

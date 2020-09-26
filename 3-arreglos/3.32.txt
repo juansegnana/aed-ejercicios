@@ -1,0 +1,122 @@
+// existen dos formas de realizar
+// 1 matriz de 101x32
+// 2 arreglos: una de 101x31; otro vector de 100 elementos.
+Acción MUNICIPALIDAD-3.32 ES
+Ambiente
+
+  ESTACIONAMIENTO = Registro
+    FECHA = Registro
+      año: 1970..2038;
+      mes: 1..12;
+      dia: 1..31;
+    fin-registro
+    patente: AN(7);
+    horaDesde: N(2);
+    horaHasta: N(2);
+    posta: 1..100;
+  Fin-registro
+
+  reg_est: ESTACIONAMIENTO;
+  a_est: Archivo de ESTACIONAMIENTO;
+
+  REG_ARREGLO = Registro
+    costo: N(10,2);
+    estacionamiento: N(3);
+  Fin-registro
+
+  arreglo : arreglo[1..101, 1.32] de REG_ARREGLO;
+  i, j, horas: entero;
+  importe: N(10,2);
+
+  valorHora, valorHora1, valorHora2: entero;
+
+  importeMax: N(10,2);
+  postaMax: entero;
+
+  estacionamientoMax: entero;
+  diaMax: entero;
+
+  iMax, jMax, celdaMax: entero;
+  
+Proceso
+  Abrir E/(a_est);
+  Leer(a_est, reg_est);
+  // inicia a 0 para luego acumular.
+  Para (i:=1 a 101) hacer
+    Para (j:=1 a 32) hacer
+      arreglo[i,j].costo := 0;
+      arreglo[i,j].estacionamiento := 0;
+    Fin-para
+  Fin-para
+  
+  Mientras NFDA(a_est) hacer
+
+    Según (reg_est.horaDesde) hacer
+      <=6: valorHora1 := 9;
+      <=13: valorHora1 := 14;
+      <=19: valorHora1 := 12;
+      <=23: valorHora1 := 6;
+    Fin-según
+    
+    Según (reg_est.horaHasta) hacer
+      <=6: valorHora2 := 9;
+      <=13: valorHora2 := 14;
+      <=19: valorHora2 := 12;
+      <=23: valorHora2 := 6;
+    Fin-según
+
+    Si (valorHora1 > valorHora2) entonces
+      valorHora := valorHora1;
+    Sino
+      valorHora := valorHora2;
+    Fin-si
+
+    horas := (reg_est.horaHasta - reg_est.horaDesde) + 1;
+    importe := horas*valorHora;
+    // suma 1 si encuentra un estacionado
+    reg_est[posta, reg_est.FECHA.dia].estacionamiento := reg_est[posta, reg_est.FECHA.dia].estacionamiento + 1;
+    // suma importe según precio mayor 
+    reg_est[posta, 32].costo := reg_est[posta, reg_est.FECHA.dia].costo + importe;
+    // suma 1 de estacionamiento al total del dia.
+    reg_est[101, reg_est.FECHA.dia].estacionamiento := arreglo[posta, reg_est.FECHA.dia].estacionamiento + 1;
+    // avanza al siguiente registro
+    Leer(a_est, reg_est);
+
+  Fin-Mientras
+  // recorre todo menos totales, buscando la posta y dia con mayor cant. de est.
+  celdaMax := 0;
+  Para (i:=1 hasta 100) hacer
+    Para (j:=1 hasta 31) hacer
+      Si (arreglo[i,j].estacionamiento >= celdaMax) entonces
+        celdaMax := arreglo[i,j].estacionamiento;
+        iMax := i;
+        jMax := j;
+      Fin-si
+    Fin-para
+  Fin-para
+
+  ESC("En posta: ", iMax, ". El día: ", jMax, "hubo la mayor cant. de estacionam.");
+  // recorre toda columna 32 (totales)
+  importeMax := 0;
+  Para (i:=1 hasta 100) hacer
+    si (arreglo[i, 32].costo >= importeMax) entonces
+      importeMax := arreglo[i, 32].costo;
+      postaMax := i;
+    fin-si
+  Fin-para
+
+  ESC("La posta que más recaudó fue: ", postaMax);
+  // recorre todas las columnas, viendo fila 101 (totales).
+  estacionamientoMax := 0;
+  Para (j:=1 hasta 31) hacer
+    Si (arreglo[101, j].estacionamiento >= estacionamientoMax) entonces
+      estacionamientoMax := arreglo[101, j].estacionamiento;
+      diaMax := j;
+    Fin-para
+  Fin-para
+
+  ESC("Día con más estacionam. fue:", diaMax);
+
+  Cerrar(a_est);
+
+Fin Acción.
