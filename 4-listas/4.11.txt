@@ -1,0 +1,99 @@
+Acción 4.11 ES
+Ambiente
+  MOTORIZADOS = Registro
+    nro_personal: N(8);
+    nombre: AN(30);
+    antiguedad: N(2);
+  Fin-registro
+
+  a_mot: Archivo de MOTORIZADOS ordenado por nro_personal;
+  reg_mot: MOTORIZADOS;
+  
+  PRIM, ULT, Q, P: Puntero a Nodo;
+  // Datos para Nodo
+  PERSONAL = Registro
+    nro_personal: N(8);
+    nombre: AN(30);
+    asignaciones: N(5);
+    antiguedad: N(2);
+  Fin-Registro
+  // Lista doble.
+  Nodo = Registro
+    datos: PERSONAL;
+    prox, ant: Puntero a Nodo;
+  Fin-registro
+  bool: Lógico;
+
+Proceso
+  Abrir E/(a_mot);
+  Leer(a_mot, reg_mot);
+  PRIM := NIL;
+  // Cargar de archivo a la lista.
+  Mientras NFDA(a_mot) hacer
+    P:= PRIM;
+    Nuevo(Q);
+    *Q.datos.nro_personal := reg_mot.nro_personal;
+    *Q.datos.nombre := reg_mot.nombre;
+    *Q.datos.antiguedad := reg_mot.antiguedad;
+    *Q.datos.asignaciones := 0;
+    // Se debe hacer una carga ordenada.
+    // Lista vacia
+    Si (PRIM = NIL) entonces
+      PRIM := Q;
+      *Q.ant := NIL;
+      *Q.prox := NIL;
+      *ULT.prox := Q;
+    SINO
+      Mientras (P <> NIL) y (*P.datos.antiguedad > *Q.datos.antiguedad) hacer
+        P:= *P.prox;
+      Fin-Mientras
+      // Si paró en el principio:
+      Si (P = PRIM) entonces
+        *Q.prox := P;
+        *Q.ant := NIL;
+        *P.ant := Q;
+        PRIM := Q;
+      SINO
+        // Si es el ultimo elemento:
+        Si (P = NIL) entonces
+          *Q.prox := NIL;
+          *Q.ant := ULT;
+          ULT.prox := Q;
+          ULT := Q;
+        SINO // insertar en el medio:
+          *Q.prox:= NIL;
+          *Q.ant:= *P.ant;
+          *(*P.ant).prox:= Q;
+          *P.ant := Q;
+        Fin-si
+      Fin-si
+    Fin-Si
+    Leer(a_mot, reg_mot);
+  Fin-Mientras
+  // --FIN DE CARGA--
+  ESC("Desea nueva asignación? S/N");
+  Leer(bool);
+  Mientras (bool) hacer
+    P:= PRIM;
+    *P.datos.asignaciones := *P.datos.asignaciones + 1;
+    // Sacarlo del principio
+    *(*P.prox).ant := NIL;
+    PRIM := *P.prox;
+    // Ponerlo al final
+    *ULT.prox := P;
+    *P.ant := ULT;
+    *P.prox := NIL;
+    ULT := P;
+    // Fin, preguntar de nuevo:
+    ESC("Nueva asignación?");
+    Leer(bool);
+  Fin-Mientras
+  // Recorrer y mostrar asig. de c/motorista.
+  P:= PRIM;
+  Mientras (P <> NIL) hacer
+    ESC("Las asignaciones totales del motorista", *P.datos.nombre, "son de", *P.dato.asignaciones);
+    P:= *P.prox;
+  Fin-mientras
+  // Fin.
+  Cerrar(a_mot);
+Fin Acción.

@@ -1,0 +1,31 @@
+Simplemente enlazada
+PASCAL
+type
+
+  tDato = record
+    legajo: Integer;
+    dni: Integer;
+    nombre: String;
+    materia: String;
+  end;
+  tPosL = ^tNodo;
+  tNodo = record
+    dato: tDato;
+    sig: tPosL;
+  end;
+  tLista = tPosL; // Tipo lista
+
+Doblemente enlazada
+
+type
+  PuntList = ^Nod_cl
+  Nod_cl = record
+    nro_socio: Integer;
+    dni: Integer;
+    nombre: String;
+    cant_vid_alq: Integer;
+    prox: PuntList;
+    ant: PuntList;
+  end;
+
+

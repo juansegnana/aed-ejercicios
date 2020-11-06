@@ -1,0 +1,61 @@
+arreglo: /// by gonza
+ACCION Viaje2 ES
+    AMBIENTE
+        viajes2018 = REGISTRO
+            Fecha: FECHA 
+            Origen: N(2)
+            Destino: N(2)
+            millas_C: N(10)
+        fr
+        viaje: archivo de viajes2018
+        v: viajes2018
+        arr: arreglo de [1..11, 1..5] de enteros
+        trimestre, menor, mayor, mayorT, i, j : enteros 
+    PROCESO
+        Abrir E/ (viaje)
+        Leer(viaje,v)
+        //inicializar
+        PARA I:= 1 HASTA 11 HACER
+            PARA J:= 1 HASTA 5 HACER
+                arr[i,j]:= 0
+            FP 
+        FP 
+        MIENTRAS NFA(viaje) HACER
+            SEGUN v.Fecha.Mes HACER
+                <=3: trimestre:= 1
+                <=6: trimeste:= 2
+                <=9: trimeste:= 3
+                >=12: trimeste:= 4
+            FS 
+            arr[v.destino,trimeste]:= arr[v.destino,trimeste] + v.millas
+            arr[11,trimeste]:= arr[11,trimeste] + arr[v.destino,trimeste]
+            arr[v.destino,5] := arr[v.destino,5] + arr[v.destino,trimeste]
+            arr[11,5]:= arr[11,5] + arr[v.destino,trimeste]
+            Leer(viaje,v)
+        FM 
+        //a, b y c 
+        mayor:= LV
+        menor:= HV
+        mayorT:= LV
+        PARA i:= 1 HASTA 10 HACER
+            SI arr[i,5] < menor ENTONCES 
+                menor:= arr[i,5]
+                DestinoMM:= i 
+            FSI 
+            PARA j:= 1 HASTA 4 HACER 
+                SI arr[11,j] > mayor ENTONCES
+                    mayor:= arr[11,j]
+                    trimestreMM:= j 
+                FSI 
+                SI arr[i,j] > MayorT ENTONCES
+                    MayorT:= arr[i,j]
+                    CantCD:= i 
+                    CantCT:= j 
+                FSI 
+            FP 
+        FP 
+        Esc('El mayor trimestre con millas compradas es ', trimestreMM)
+        Esc('El destino con menos cantidad de millas compradas es ', DestinoMM)
+        Esc('El trimestre ', CantCT,'en el destino ', CantCD, 'Fue el el que tuvo mayores millas compradas')
+        Cerrar(viajes)
+    Fin_ACCION

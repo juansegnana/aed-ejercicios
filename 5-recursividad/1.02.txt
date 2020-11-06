@@ -1,0 +1,17 @@
+// Juan Segnana
+Acción 1.02 Es
+Ambiente
+
+Función Fibonacci(n: entero): entero ES
+  Si (n = 1) o (n = 2) entonces
+    Fibonacci := 1;
+  Sino
+    Fibonacci := Fibonacci(n-1) + Fibonacci(n-2);
+  Fin-si
+Fin-función
+
+Algoritmo
+  ESC("Ingrese un numero entero");
+  LEER(nro_ing);
+  Fibonacci(nro_ing);
+Fin Acción.

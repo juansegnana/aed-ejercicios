@@ -1,0 +1,34 @@
+// https://aed-frre.github.io/practica/4/#ejercicio-41
+// Juan Segnana.
+Acción 4.1 (PRIM: puntero a Nodo) ES
+Ambiente
+  
+  p: puntero a Nodo;
+  Nodo = Registro
+    dato: N(9);
+    prox: puntero a Nodo;
+  Fin-Reg
+
+  ing_pos: N(9);
+  posición: entero;
+  
+Proceso
+  ESC("Ingrese posición.");
+  Leer(ing_pos); // ej 5. mostrar NODO 5.
+
+  p:= PRIM;
+  Si (p = Nil) entonces
+    ESC("Error, LISTA VACIA.");
+  Sino
+    Mientras (p <> Nil) o (posición > 0) hacer
+    p:= *p.prox;
+    posición := posición - 1;
+    Fin-mientras
+    Si (p = nill) entonces
+      ESC("Error, NO se encontró.");
+    Sino
+      ESC("Dato encontrado:", p.dato);
+    Fin-Si
+  Fin-si
+  
+Fin Acción.

@@ -1,0 +1,128 @@
+// https://aed-frre.github.io/practica/x/
+// Ejercicio: https://i.imgur.com/rqKEjoI.png 
+
+Acción MUNIC_res (valoresM2 : arreglo[1..6] de N(9,2)) ES
+Ambiente
+  
+  MAESTRO = Registro
+    nro_terreno : N(9);
+    zona : ('A'..'F');
+    ubicacion : (1..10);
+    superficie : N(9,2);
+    valor : N(9);
+  Fin-registro
+
+  reg_mae, reg_sal : MAESTRO;
+  a_mae, a_sal : Archivo de MAESTRO ordenado por nro_terreno;
+
+  MOVIMIENTO = Registro
+    nro_terreno : N(9);
+    zona : ('A'..'F');
+    ubicacion : (1..10);
+    superficie : N(9,2);
+    cod_mov : ('A', 'B', 'M');
+  Fin-registro
+
+  reg_mov : MOVIMIENTO;
+  a_mov : Archivo de MOVIMIENTO ordenado por nro_terreno;
+
+  // subacciones
+
+  Procedimiento LEER_MAESTRO es
+    Leer(a_mae, reg_mae);
+    Si FDA(a_mae) entonces
+      reg_mae.nro_terreno := HV;
+    fin-si
+  fin-procedimiento
+
+  Procedimiento LEER_MOVIMIENTO es
+    Leer(a_mov, reg_mov);
+    Si FDA(a_mov) entonces
+      reg_mov.nro_terreno := HV;
+    fin-si
+  fin-procedimiento
+
+  Procedimiento CALCULAR_VALOR es
+    Según (reg_mov.zona) hacer
+      'A': i:=1;
+      'B': i:=2;
+      'C': i:=3;
+      'D': i:=4;
+      'E': i:=5;
+      'F': i:=6;
+    Fin-segun
+    valorCalculado := reg_mov.superficie * valoresM2[i] * coef_ingresado;
+  fin-procedimiento
+
+  Procedimiento PROCESOS_IGUALES es
+    Si (reg_mov.cod_mov = 'A') entonces
+      ESC("Error: alta inválida.");
+      reg_sal := reg_mae;
+      GRABAR(a_sal, reg_sal);
+    Sino
+      Si (reg_mov.cod_mov = 'M') entonces
+        // proc_mod_maestro
+        Si (reg_mov.zona <> reg_mae.zona) entonces
+          reg_mae.zona := reg_mov.zona;
+        fin-si
+        CALCULAR_VALOR;
+        si (reg_mae.valor <> valorCalculado) entonces
+          reg_mae.valor := valorCalculado;
+        fin-si
+        reg_sal := reg_mae;
+        GRABAR(a_sal, reg_sal);
+      Sino // eliminación lógica
+        // no hacer nada.
+      Fin-si
+    Fin-si
+    LEER_MAESTRO;
+    LEER_MOVIMIENTO;
+  fin-procedimiento
+
+  Procedimiento PROCESOS_DISTINTOS es
+    Si (reg_mov.cod_mov = 'B') o (reg_mov.cod_mov = 'M') entonces
+      ESC("Error. Salteado.");
+      reg_sal := reg_mae;
+      GRABAR(a_sal, reg_sal);
+    Sino // alta
+      CALCULAR_VALOR;
+      reg_sal.nro_terreno := reg_mov.nro_terreno;
+      reg_sal.zona := reg_mov.zona;
+      reg_sal.ubicacion := reg_mov.ubicacion;
+      reg_sal.superficie := reg_mov.superficie;
+      reg_sal.valor := valorCalculado;
+      GRABAR(a_sal, reg_sal);
+    Fin-si
+    LEER_MOVIMIENTO;
+  fin-procedimiento
+
+Proceso
+
+  Abrir E/(a_mae);
+  Abrir E/(a_mae);
+  Abrir /S(a_sal);
+
+  Leer(a_mae, reg_mae);
+  Leer(a_mov, reg_mov);
+  
+  ESC("Ingrese coeficiente de incremento.");
+  Leer(coef_ingresado);
+  
+  Mientras (reg_mae.nro_terreno <> HV) o (reg_mov.nro_terreno <> HV) hacer
+
+    Si (reg_mae.nro_terreno = reg_mov.nro_terreno) entonces
+      PROCESOS_IGUALES
+    Sino
+      Si (reg_mae.nro_terreno < reg_mov.nro_terreno) entonces // no existe en MAE, debe crearse.
+        reg_sal := reg_mae;
+        GRABAR(a_sal, reg_sal);
+        LEER_MAESTRO;
+      Sino
+        PROCESOS_DISTINTOS;
+      Fin-si
+    fin-si
+  Fin-mientras
+  Cerrar (a_mae);
+  Cerrar (a_mov);
+  Cerrar (a_sal);
+Fin Acción.

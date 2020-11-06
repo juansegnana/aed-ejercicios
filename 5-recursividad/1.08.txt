@@ -1,0 +1,7 @@
+// 1.08
+Funcion sumarA(arr: Arreglo[1..10] de entero, i: entero):entero ES
+	Si (i=1) entonces 
+		sumarA := arr[i];
+	Sino 
+		sumarA := arr[i] + sumarA(arr, i-1);
+Fin-función

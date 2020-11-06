@@ -1,0 +1,119 @@
+// Ejercicio 1. JuanSegnana
+Acción MILLAS ES
+Ambiente
+
+  FECHA = Registro
+    año: N(4);
+    mes: (1..12);
+    dia: (1..31);
+  fin-registro
+  
+  MILLAS = Registro
+    dni : N(8);
+    millas : N(10);
+    ult_carga : FECHA;
+  Fin-registro
+
+  reg_mil : MILLAS;
+  a_mil : Archivo de MILLAS indexado por dni;
+  
+  DESTINOS = Registro
+    origen : AN(3);
+    destino : AN(3);
+    millas : N(10);
+    duracion : N(2);
+  Fin-registro
+
+  reg_des : DESTINOS;
+  a_des : Archivo de DESTINOS indexado por origen y destino;
+  
+  intento_correcto, carga_opcional, opc_cargarMas, otro_pasajero : Lógico;
+  pasajerosNuevos : N(3);
+  ing_origen, ing_destino : AN(3);
+  ing_dni : N(8);
+  millasViaje, millasActuales, millasNecesarias, millasACargar : N(10);
+
+
+  Procedimiento DESCONTAR_MILLAS ES
+    descuentoMillas := (millasActuales - millasViaje)
+    reg_mil.millas := descuentoMillas;
+    GRABAR(a_mil, reg_mil);
+    ESC("Se descontaron", descuentoMillas, "millas.");
+  Fin-procedimiento
+
+Proceso
+  Abrir E/S (a_mil);
+  Abrir E/ (a_des);
+  
+  intento_correcto := VERDADERO;
+  pasajerosNuevos := 0;
+  
+  REPETIR
+  // Cargar origen/destino.
+    ESC("Ingrese origen y destino del viaje.");
+    Leer(ing_origen); Leer(ing_destino);
+    
+    reg_des.origen := ing_origen;
+    reg_des.destino := ing_destino;
+    Leer(a_des, reg_des);
+
+    Si EXISTE entonces
+      intento_correcto := VERDADERO;
+    Sino
+      ESC("Error, origen y/o destino no existe.");
+      intento_correcto := FALSO;
+    Fin-si
+  Hasta que (intento_correcto)  
+  
+  millasViaje := reg_des.millas;
+  Cerrar(a_des);
+  // Cargar pasajeros.
+  REPETIR
+    
+    ESC("Ingrese DNI del pasajero.");
+    Leer(ing_dni);
+
+    reg_mil.dni := ing_dni;
+    Leer(a_mil, reg_mil);
+
+    Si EXISTE entonces
+      millasActuales := reg_mil.millas;
+      Si (millasActuales < millasViaje) entonces
+        carga_opcional := FALSO;
+        ESC("No tienes suficientes millas.");
+        millasNecesarias := (millasViaje - millasActuales);
+        ESC("Necesita", millasNecesarias, "millas para este viaje.");
+      Sino
+        DESCONTAR_MILLAS;
+        carga_opcional := VERDADERO;
+      Fin-si
+    Sino // nuevo pasajero
+      pasajerosNuevos := pasajerosNuevos + 1;
+      carga_opcional := FALSO;
+      ESC("Para este viaje necesita:", millasViaje);
+    Fin-si
+
+    Si (carga_opcional) entonces
+      ESC("¿Desea cargar más millas? Actualmente tiene:", reg_mil.millas);
+      Leer(opc_cargarMas);
+    Fin-si
+
+    Si (opc_cargarMas) o (carga_opcional = FALSO) entonces // carga no opcional
+      ESC("¿Cuantas millas cargará?")
+      Leer(millasACargar);
+      reg_mil.millas := millasActuales + millasACargar;
+      reg_mil.ult_carga := FECHA_HOY();
+      GRABAR(a_mil, reg_mil);
+      Si (carga_opcional = FALSO) entonces
+        DESCONTAR_MILLAS;
+      Fin-si
+      ESC("Se cargaron", millasACargar, "millas. Ahora tiene:", reg_mil.millas);
+    Fin-si
+
+    ESC("¿Agregar otro pasajero? S/N");
+    Leer(otro_pasajero);
+  Hasta que (otro_pasajero = 'N')
+
+  ESC("Pasajeros nuevos:", pasajerosNuevos);
+  Cerrar(a_mil); Cerrar(a_des);
+Fin Acción.

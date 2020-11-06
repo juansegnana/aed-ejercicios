@@ -1,0 +1,36 @@
+// Eliminar repetidos; Verificar si está ordenado.
+Acción 4.13 (PRIM: Puntero a Nodo) ES
+Ambiente
+  P, ULT, resguardo: Puntero a Nodo;
+  Nodo = Registro
+    dato: N(8);
+    ant, prox: Puntero a Nodo;
+  Fin-registro
+  
+  Función VERIFICAR_ORDEN(prim_verif: Puntero a Nodo): lógico ES
+    // Verificar si está ordenado. Devuelve S/N.
+  Fin-Función
+
+Proceso
+  Si (VERIFICAR_ORDEN(PRIM)) entonces
+    P := PRIM;
+    Mientras (P <> NIL) entonces
+      resguardo := P;
+      // Recorro cada elemento de la lista comparando con el resguardo para encontrar duplicados.
+      P := PRIM;
+      Mientras (P <> NIL) entonces
+        Si (*resguardo.dato = *P.dato) entonces
+          // BORRAR
+          
+          *(*P.prox).ant := *P.ant;
+          *(*P.ant).prox := *P.prox;
+        Fin-si
+        P := *P.prox;
+      Fin-Mientras
+      P := *P.prox;
+    Fin-Mientras
+  Sino
+    ESC("ERROR.");
+  Fin-si
+  
+Fin Acción.

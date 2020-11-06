@@ -1,0 +1,104 @@
+// --------------------------------------------------------------- //
+// Ejercicio 2. JuanSegnana
+Acción 2018 ES
+Ambiente
+  
+  FECHA = Registro
+    año: 2018;
+    mes: (1..12);
+    dia: (1..31);
+  fin-registro
+
+  VIAJES = Registro
+    fecha : FECHA;
+    origen : AN(3);
+    destino : AN(3);
+    millas_compradas : N(10);
+  Fin-registro
+
+  reg_via : VIAJES;
+  a_via : Archivo de VIAJES ordenado por fecha;
+  // filas: nombres de dest/orig; columnas: 4-trimestres.
+  arreglo : Arreglo[1..11, 1..5] de N(10);
+
+  i, j : Entero;
+  trim_actual : N(1..4);
+
+  destinoMenorMillas, posDestMenor : Entero;
+  destinoMayorMillas, posDestMayor : Entero;
+  mayorMillasTrim, posMayorTrim : Entero;
+  mayorDestTrim, posMayorDestTrim : Entero;
+
+Proceso
+  Abrir E/(a_via);
+  Leer(a_via, reg_via);
+
+  // inicializar.
+  Para i:=1 hasta 11 hacer
+    Para j:=1 hasta 5 hacer
+      arreglo[i,j]:=0;
+    Fin-para
+  Fin-para
+  // cargar arreglo.
+  Mientras NFDA(a_via) hacer
+    // selec. trimestre.
+    Según (reg_via.fecha.mes) hacer
+      <=3: trim_actual := 1;
+      <=6: trim_actual := 2;
+      <=9: trim_actual := 3;
+      otro: trim_actual := 4;
+    Fin-según
+
+    arreglo[reg_via.destino, trim_actual] := reg_via.millas_compradas;
+    // acumular en columna 5.
+    arreglo[reg_via.destino, 5] := arreglo[reg_via.destino, 5] + reg_via.millas_compradas;
+    // acumular en fila 11.
+    arreglo[11, trim_actual] := arreglo[11, trim_actual] + reg_via.millas_compradas;
+    Leer(a_via, reg_via);
+  Fin-mientras
+
+
+  destinoMenorMillas := HV;
+  posDestMenor := 0;
+  destinoMayorMillas := LV;
+  posDestMayor := 0;
+
+  Para i:=1 hasta 10 hacer
+    Si (arreglo[i, 5] < destinoMenorMillas) entonces // punto 2)
+      destinoMenorMillas := arreglo[i, 5];
+      posDestMenor := i;
+    Sino // para punto 3)
+      Si (arreglo[i, 5] > destinoMayorMillas) entonces
+        destinoMayorMillas := arreglo[i, 5];
+        posDestMayor := i;
+      Fin-si
+    Fin-si
+  Fin-para
+
+  mayorMillasTrim := LV;
+  posMayorTrim := 0;
+
+  mayorDestTrim := LV;
+  posMayorDestTrim := 0;
+
+  Para j:=1 hasta 4 hacer
+    Si (arreglo[11, j] > mayorMillasTrim) entonces
+      mayorMillasTrim := arreglo[11, j];
+      posMayorTrim := j; // para punto 1)
+    Fin-si
+    Si (arreglo[posDestMayor, j] > mayorDestTrim) entonces // para punto 3)
+      mayorDestTrim := mayorDestTrim + arreglo[posDestMayor, j]
+      posMayorDestTrim := j;
+    Fin-si
+  Fin-para
+
+  // CONSIGNAS.
+  // 1)
+  ESC("El trimestre con mayor cant. de millas compradas:", posMayorTrim);
+  // 2)
+  ESC("El destino que menos clientes compraron millas fue:", posDestMenor);
+  // 3)
+  ESC("El destino con mayor cant. de compras fue:", posDestMayor, ". El mayor trimestre de este destino fue:", posMayorDestTrim);
+   
+  Cerrar(a_via);
+Fin Acción.

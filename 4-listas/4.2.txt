@@ -1,0 +1,46 @@
+// https://aed-frre.github.io/practica/4/#ejercicio-42
+// Juan Segnana
+
+Acción 4.2 (PRIM: Nodo de Puntero) ES
+Ambiente
+  
+  p, q, PRIM_q: Puntero a Nodo;
+  Nodo = Registro
+    dato: entero;
+    prox: Puntero a Nodo;
+  Fin-Reg
+  
+Proceso
+
+  PRIM_q := Nill
+  p:= PRIM;
+  Si (p = Nil) entonces
+    ESC("Error, LISTA VACIA.");
+  Sino
+    Mientras (p <> Nil) hacer
+    ant_p := p;
+    p:= *p.prox;
+      Si (p.dato MOD 10 = 0) entonces
+        *ant_p := *p.prox;
+        *q.prox := p;
+        *p.prox := Nil;
+        Leer(*q.dato);
+        // cargar nueva lista
+        Si (PRIM_q = Nil) entonces // Unico elemento
+          PRIM_q := q;
+          *q_prox := Nil;
+        Sino
+          Mientras (q <> nil) hacer // hay elementos
+            ant := q;
+            q := *q.prox;
+          Fin-mientras
+        Fin-si
+        // borrar de vieja lista.
+        ant_p := *p.prox;
+        Disponer(p);
+      Fin-si
+    Fin-mientras
+  Fin-si
+  
+  
+Fin Acción.

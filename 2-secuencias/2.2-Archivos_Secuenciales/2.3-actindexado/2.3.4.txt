@@ -1,0 +1,120 @@
+Acción SUPERM ES
+Ambiente
+
+  FECHA = Registro
+    año: N(4);
+    mes: (1..12);
+    dia: (1..31);
+  fin-registro
+  
+  PRODUCTOS = Registro
+    cod_prod : N(9);
+    nombre : AN(36);
+    stock : N(9);
+    precio : N(5);
+  Fin-registro
+
+  reg_prod: PRODUCTOS;
+  a_prod: Archivo de PRODUCTOS indexado por cod_prod;
+
+  TICKET = Registro
+    nro_ticket : N(9);
+    fecha : FECHA;
+    cliente : "consumidor final";
+  Fin-registro
+
+  reg_ticket: TICKET;
+  a_ticket: Archivo de TICKET indexado por nro_ticket;
+
+  DETALLE_TICKET = Registro
+    nro_ticket : N(9);
+    nro_linea : N(9);
+    cod_prod : N(9);
+    cantidad : N(5);
+  Fin-registro
+
+  reg_det: DETALLE_TICKET;
+  a_det: Archivo de DETALLE_TICKET indexado por nro_ticket;
+  
+Proceso
+
+  Abrir E/S(a_prod);
+  Abrir /S(a_ticket);
+  Abrir /S(a_det);
+
+  ESC("Ingrese nro. linea");
+  Leer(ing_nro_linea);
+
+  REPETIR
+    nuevo_producto := VERDADERO;
+    correcto := FALSO;
+    precioTotal := 0;
+
+    ticketActual := OBTENER_TICKET;
+    fechaActual := OBTENER_FECHA;
+
+    reg_ticket.nro_ticket := ticketActual;
+    reg_ticket.fecha := fechaActual;
+    reg_ticket.cliente := "Consumidor final";
+    GRABAR(a_ticket, reg_ticket);
+
+    reg_det.nro_ticket := ticketActual;
+    reg_det.nro_linea := ing_nro_linea;
+    GRABAR(a_det, reg_det);
+
+    Mientras (nuevo_producto) hacer
+      
+      Mientras NO (correcto) hacer // correcto = FALSO
+        ESC("Ingresar código del producto.");
+        Leer(actual_cod_prod);
+        reg_prod.cod_prod := actual_cod_prod;
+        Leer(a_prod, reg_prod);
+        Si EXISTE entonces
+          correcto := VERDADERO;
+        Sino
+          correcto := FALSO;
+          ESC("Error: vuelva a escribir el COD.")
+        Fin-si
+      Fin-mientras
+
+      Escribir("Ingrese cant. a comprar.");
+      Leer(actual_cantidad);
+      // stock actualizado
+      reg_prod.stock := reg_prod.stock - actual_cantidad;
+      
+      //actual_precioU := reg_prod.precio;
+      //precioSubtotal := actual_cantidad * actual_precioU;
+     // precioTotal := precioTotal + precioSubtotal;
+      
+      reg_det.cod_prod := actual_cod_prod;
+      reg_det.cantidad := actual_cantidad;
+      GRABAR(a_det, reg_det);
+
+      ESC("¿Ingresar nuevo producto? S/N");
+      Leer(nuevo_producto);
+    Fin-mientras
+
+    //IMPRIMIR_COMPROBANTE
+    Esc("Empresa: ", const_empresa);
+    Esc("Cuit: ", const_cuit);
+    Esc("Fecha: ", fechaActual);
+
+    Esc("Cliente: ", reg_ticket.cliente);
+    reg_det.nro_ticket := ticketActual;
+    Leer(a_det, reg_det);
+
+    Esc("Producto   |   Cantidad   |    Subtotal  ");
+    Mientras NFDA(a_det) hacer
+      ESC(reg_det.cod_prod, reg_det.cantidad)
+
+    Fin-mientras
+
+
+    ESC("¿Realizar nuevo comprobante? S/N");
+    Leer(salir);
+  HASTA QUE (salir)
+
+  Cerrar(a_prod);
+  Cerrar(a_det);
+  Cerrar(a_ticket);
+Fin Acción.

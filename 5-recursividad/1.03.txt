@@ -1,0 +1,9 @@
+// Juan Segnana 1.03 o 5.1.3
+
+Función multSuc(num_A, num_B: entero): entero ES
+  Si (num_B = 0) entonces
+    multSuc := 1;
+  Sino
+    multSuc := num_A * multSuc(num_A, num_B-1);
+  Fin-si
+Fin-Función

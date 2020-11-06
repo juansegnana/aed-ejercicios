@@ -1,0 +1,47 @@
+Se dispone de una lista simplemente encadenada de números enteros, diseñar un algoritmo que a partir de ella genere otra lista conteniendo los nodos cuyos datos terminan en cero; 
+dichos elementos, deberán ser eliminados de la lista original. 
+Se asume que la lista está cargada, y que el algoritmo recibe como parámetro de entrada la dirección del primer elemento.
+
+
+ACCION EJER2(PRIM: PUNTERO A NODO) ES
+	AMBIENTE
+		NODO: REGISTRO
+			NUMERO: ENTERO
+			PROX: PUNTERO A NODO
+		FIN REGISTRO
+		
+		P, P2: PUNTERO A NODO
+		PRIM2, ANT2, ANT: PUNTERO A NODO
+	ALGORITMO
+		P:= PRIM
+		PRIM2:= NIL
+		SI (P = NIL) ENTONCES
+			ESC('ERROR LISTA VACIA')
+		SINO
+			MIENTRAS(P <> NIL) HACER
+				SI((*P.NUMERO MOD 10) = 0)ENTONCES
+					Nuevo(P2) //creo un nuevo nodo
+					P2*.numero:=P*.numero // le cargo los datos
+					P2*.PROX:=NIL //como siempre va al final, le pongo como próximo NIL
+					SI(PRIM2 = NIL)ENTONCES //nueva lista está vacía
+						ANT2:= P2 //último nodo cargado
+						PRIM2:= P2 // actualizo el prim2
+					SINO //tiene elementos
+						ANT2*.PROX:=P2 // mi nuevo nodo pasa al final
+						ANT2:=P2 //Actualizo el último nodo
+					SI(P= PRIM)ENTONCES// tengo que borrar el primer elemento
+						P:=P*.PROX// muevo P al próximo nodo
+						BORRAR(PRIM) //elimino el nodo
+						PRIM:=P //actualizo prim
+					SINO
+						P:=P*.PROX //muevo P al próximo nodo
+						BORRAR(ANT*.PROX) //borro el nodo
+						ANT*.PROX:= P // actualizó el próximo del que era anterior del nodo eliminado
+					FIN SI
+				SINO
+					ANT:=P
+					P:= *P.PROX
+				FIN SI
+			FIN MIENTRAS
+		FIN SI
+FIN ACCION

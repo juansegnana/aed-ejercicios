@@ -1,0 +1,16 @@
+// 2.01
+Procedimiento invertir(num: entero) ES
+	Si (num MOD 10 = 0) entonces
+		ESC(num);
+	Sino
+		invertir(num DIV 10);
+		ESC(num MOD 10);
+	Fin-si
+Fin-Procedimiento
+// --- Simplificado de Emi: --- //
+Procedimiento inverso(n: entero) ES
+	ESC(n MOD 10);
+	Si (n > 9) entonces
+		inverso(n DIV 10);
+	Fin-si
+Fin-procedimiento
