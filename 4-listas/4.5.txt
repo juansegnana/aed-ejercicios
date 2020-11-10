@@ -1,0 +1,89 @@
+
+Ejercicio 4.5
+Dada una lista simplemente encadenada que contiene datos
+de todas las provincias de la República Argentina:
+nombre, capital, cantidad total de habitantes y cantidad de analfabetos,
+y está ordenada en forma decreciente por número de habitantes analfabetos,
+
+generar otras tres listas que contengan el nombre, la capital y el porcentaje de analfabetos
+de las Provincias que respondan a las siguientes restricciones.
+
+L1: <= 10 % analfabetos
+L2: 16 a 25 % analfabetos
+L3: => 26 % analfabetos
+
+Accion 4.5(Prim:Puntero a nodo1) ES 
+    
+    Ambiente
+    
+        PROVINCIAS = Registro
+            nombre : AN;
+            capital : AN;
+            cth : N(9); // cantidad total de habitantes
+            cta : N(9); // cantidad total de analfabetos
+        Fin-reg
+        RESULTADO = Registro
+            nombre : AN;
+            capital : AN;
+            pda: N(2,2); // porcentaje de analfabetos
+        Fin-reg
+        
+        nodo1 = reg
+            dato: PROVINCIAS;
+            sig:puntero a nodo1;
+        freg
+        nodo2 = reg
+            dato: RESULTADOS;
+            sig:puntero a nodo2;
+        freg
+    
+        p:puntero a nodo1
+        q:puntero a nodo2
+        LRIM1, LRIM2, LRIM3:puntero a nodo2
+        
+        Procedimiento asignar(primElegido: Puntero a nodo2; porc: N(2,2); p, reslgido: Puntero a Nodo1) ES
+
+          nuevo(q)
+            *q.dato.nombre:=*p.dato.nombre;
+            *q.dato.capital:=*p.dato.capital;
+            *q.dato.pda:=porc;
+            *q.sig:=NIL
+   
+          Si (primElegido = NILL) Entonces
+            primElegido := q;         
+          Sino // conectar un nuevo nodo con un nodo LPRIM1 EXISTIENDO       
+            *reslgido.sig:= q; // LPRIM 1 lo conecto al nodo entrante nuevo         
+          Fsi
+          reslgido:=q; //actualizar resguardo
+        Fp
+    
+    Proceso // y está ordenada en forma decreciente por número de habitantes analfabetos,
+            // 321 300 259 123 50 
+    	p:=prim
+      LRIM1 := NIL;
+      LRIM2 := NIL; 
+      LRIM3 := NIL;
+      Si p = NILL Entonces
+      	ESC("Vote 403, vote for-Biden")
+      Sino
+      
+      		Mientras p <> NILL HACER
+          	porcentaje := (*p.dato.cta * 100) / *p.dato.cth; // porcentaje = (cantAnalf*100) / cantHab ;
+						// porcentaje de analfabetos
+            
+          	Según (porcentaje) hacer
+            	
+              <= 10 :
+            			asignar(LRIM1, porcentaje, p, resL1);
+             	>= 16 y <= 25 :
+            			asignar(LRIM2, porcentaje, p, resL2);
+              >= 26 :
+                  asignar(LRIM3, porcentaje, p, resL3);
+            Fin-según
+            
+          	p:=*p.sig
+          Fm
+       
+      Fsi
+      
+Fin-Acción

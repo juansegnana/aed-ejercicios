@@ -1,14 +1,18 @@
 // 1.04 -> determinar si todos los digitos de un número N son TODOS pares.
-// 56 NO TERMINADO
+// Corrección de Emi.
 Función todoPar(num: entero):lógico ES
-
-  Si ( (num DIV 10) = 0 ) entonces
-    todoPar 
+  Ambiente
+    d: N(5,2);
+  Algoritmo
+  Si ( num = 0 ) entonces
+    todoPar := VERDADERO;
   Sino
-    Si (num MOD 2 = 0) entonces
-      todoPar := VERDADERO;
+    d:= num MOD 10;
+    Si (d MOD 2 = 0) entonces
+      todoPar := todoPar(num DIV 10);
     Sino
       todoPar := FALSO;
+    Fin-si
   Fin-si
 
 Fin-Función

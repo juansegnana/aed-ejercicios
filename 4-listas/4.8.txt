@@ -1,0 +1,106 @@
+Ejercicio 4.8
+Escribir un algoritmo que permita buscar, insertar o borrar un elemento identificado con una clave determinada en una lista circular simplemente encadenada.
+
+
+Acción 4.8 ES
+
+  Ambiente
+
+    prim, p,colorg,resg: Puntero a Nodo;  
+    bandera:booleano
+    nodo = Registro
+      clave: AN;
+      sig: Puntero a Nodo;
+    Fin-registro
+
+    funcion pedircolor():AN
+
+      colorx:AN
+
+      Esc("ingrese el color");
+      leer(colorx);
+      pedircolor := colorx;
+      
+    ff
+
+    Procedimiento BUSCAR() ES
+      Ambiente
+        color:AN
+        res:=puntero a nodo
+      Proceso
+      color:=pedircolor()
+
+      p:=prim
+      
+      Si p<> NIL Entonces
+        Esc("ERROR LISTA VACIA")
+      Sino
+        Mientras (*p.sig <> prim) y (*p.clave <> color) hacer
+          p:= *p.sig;
+          res:=p;
+        Fin-Mientras
+        Si (*p.clave <> color) entonces
+          ESC("ERROR, no se encontro:", color);
+        Sino
+          ESC("EL COLOR ", color, " FUE ENCONTRADO :D!!!")
+          colorg:= p;
+          Si prim <> p Entonces
+            resg:= res;
+          Fsi
+          bandera:=true
+        Fin-si
+      Fsi
+    Fin-Procedimiento;
+
+    Procedimiento INSERTAR() ES
+    Ambiente
+      color: AN;
+
+    Proceso
+
+      color := pedircolor();
+      Nuevo(q);
+      *q.dato := color;
+      *q.sig := PRIM;
+      
+      Si ( p = NIL ) Entonces
+        prim:=q
+      Sino
+        *res.sig:= q;
+      Fsi
+      res:= q;
+        
+    Fin-procedimiento
+
+    Procedimiento BORRAR() Es
+        
+      Ambiente
+
+      Proceso
+        
+        BUSCAR();
+        Si bandera = true entonces
+
+          *res.sig := *colorg.sig;
+          disponer(colorg);
+          
+        Fsi
+
+    Fin-procedimiento
+
+  Proceso
+    
+    ESC("Seleccione: 1-Buscar, 2-Insertar o 3-Borrar.");
+    Leer(opcion);
+
+    Segun(opcion) hacer
+    
+      1: BUSCAR();
+    
+      2: INSERTAR();
+      
+      3: Borrar();
+      
+    Fs
+
+Fin Acción.

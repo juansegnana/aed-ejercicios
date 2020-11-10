@@ -1,0 +1,89 @@
+/* Ejercicio 4.10
+Se dispone de una lista circular con un conjunto de números naturales. Este conjunto está dividido en 6 grupos.
+En cada grupo el primer elemento indica la cantidad de números subsiguientes a él que integran dicho grupo.
+ Se desea generar una nueva lista doblemente encadenada en la cual 
+ cada nodo contendrá el promedio de cada grupo. 
+ Dicha lista debe quedar ordenada en forma ascendente y
+ , al final se debe informar cuál fue el máximo 
+ y el mínimo promedio de todo el conjunto de números. */
+
+Accion 4.10 (prim: Puntero a Nodo) ES
+
+  Ambiente
+
+    nodoCS = reg
+
+      nro:entero
+      sig:puntero a nodoCS
+
+    fr
+
+    nodoLDE = reg
+
+      nro:entero
+      sig,ant:puntero a nodoLDE
+
+    fr
+
+    p:puntero a nodoCS
+    prim2,q, ult: Puntero a nodoLDE;
+    testigo:entero
+    
+  Proceso
+
+    p:=prim
+    menor:=HV
+    max:=LV
+    
+    Mientras (*p.sig <> PRIM) Hacer // recorro y saco los promedios de los grupos
+      acumulador := 0;
+      testigo:=*p.nro
+      p:= *p.sig;
+      
+      Para (i:=1 hasta testigo) Hacer
+        acumulador := acumulador + *p.dato;
+        p:= *p.sig;
+      Fp
+      promedio := acumulador / testigo;
+
+      Nuevo(q);
+      *q.nro:=*p.nro
+      *q.sig:=NIL
+      //*q.sig:=*p.sig 
+
+      Si prim2 = NIL Entonces
+
+        *q.ant := PRIM2;
+        ULT := q;
+
+      Sino // aclaracion num = nro escribimos mal y no queriamos cambiar, un abrazo grande
+          
+          Mientras (*q.num > *res2.num) hacer
+              res2:=q
+              q:=*q.sig
+          Fm
+          // 5 6 8
+          *(*res2.sig).ant := q;
+          q:= *res2.sig;
+          res2.sig:=q 
+          *q.ant := res2;
+         
+      Fsi
+  
+      Si (*q.nro < menor) entonces
+          menor := *q.num;
+      Sino
+          Si (*q.nro > mayor) entonces
+              mayor := *q.num;
+          Fin-si
+      Fin-Si
+    
+      res2:=q
+      p:= *p.sig;
+    
+    Fm
+        
+    Esc("El máximo fue ", mayor);
+    Esc("El máximo fue ", menor);
+        
+FA 

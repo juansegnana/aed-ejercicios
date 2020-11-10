@@ -1,0 +1,9 @@
+Procedimiento descL(p: Puntero a Nodo) ES
+Proceso
+	Si (*p.sig = NIL) entonces
+		ESC(*p.dato);
+	Sino
+		descL(*p.sig);
+		ESC(*p.dato);
+	Fin-Si
+Fin-procedimiento
