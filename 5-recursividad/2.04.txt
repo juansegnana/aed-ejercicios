@@ -1,0 +1,12 @@
+// 2.04
+Procedimiento convertir(num: entero) ES
+Ambiente
+	cociente: entero
+Algoritmo
+	Si (num DIV 2 = 0) entonces
+		ESC(num);
+	Sino
+		convertir(num DIV 2);
+		ESC(num MOD 2);
+	Fin-Si
+F-Pr
