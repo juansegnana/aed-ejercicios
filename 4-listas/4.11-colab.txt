@@ -1,0 +1,96 @@
+/* 4.11
+En una empresa de servicios motorizados que NO posee una cantidad
+fija de integrantes, pero siempre es mayor que 1 (uno).
+Los datos de las personas está almacenados en un archivo (DNI, Nombre, Antigüedad)
+ordenado por DNI. 
+Realizar un algoritmo que permita generar una lista de asignación 
+(usando una estructura de lista doblemente encadenada), 
+ordenada al principio por antigüedad, 
+y un proceso que realice dicha asignación, en cada solicitud, 
+por turno según orden en la lista. 
+Una vez asignado dicha persona se va al final de la lista para esperar su nueva asignación. 
+DNI N(5) | Nombre AN(50) | Asignaciones N(5) | Antigüedad N(2)
+*/
+Accion 4.11 Es
+    Ambiente
+        tnodo = reg
+            DNI: N(8)
+            nombre: AN(50)
+            asignaciones: N(5)
+            antiguedad: N(2)
+        fr       
+        tarch = reg
+            DNI: N(8)
+            nombre: AN(50)
+            asignaciones: N(5)
+        fr
+        nodo = reg
+            dato: tnodo;
+            sig,ant:puntero a nodo
+        fr 
+        ar: Archivo de tarch ordenado por DNI;
+        r: tarch;
+        prim, ult, res,q: Puntero a nodo;
+        deseo: booleano;
+    Proceso
+     Abrir E/(ar);
+     Leer(ar, r);
+     prim:= nil;
+    
+     Mientras NFDA(ar) hacer
+        
+         Nuevo(q); 
+         *q.dato.nombre := r.nombre;
+         *q.dato.dni := r.dni;
+         *q.dato.antiguedad := r.antiguedad;
+         *q.dato.asignaciones := 0;
+         Si (prim = NIL) entonces
+             *q.ant := NIL;
+             *q.sig := NIL; 
+             prim:=q; 
+             ult:= q;
+         Sino // tratar uno ya entrad\
+             p := prim
+             Mientras ((p <> NIL) y (*q.dato.antiguedad > *p.dato.antiguedad)) hacer
+                 p:= *p.prox;
+             FM
+             Si (p = prim) Entonces // primero
+               prim := q;
+               *q.ant := NIL;
+               *q.sig := p;p
+               *p.ant := q;
+             Sino
+                 Si (p = NIL) Entonces // ultimo
+                     *q.ant := ult;
+                     *ult.sig:=q
+                     *q.sig := NIL;
+                     ult := q;
+                 Sino // medio
+                     *(*p.ant).sig := q;
+                     *q.ant := *p.ant
+                     *p.ant := q;
+                     *q.sig := p;
+                 Fsi
+             Fsi                
+         Fsi
+         Leer(ar, r);
+     FM
+     p:= prim;
+     ESC("Desea nueva asignacion?")
+     Leer(deseo);
+     Mientras (deseo <> VERDADERO) hacer
+         Si (deseo = VERDADERO) entonces
+             *p.dato.asignaciones := *p.dato.asignaciones + 1
+             prim:=*p.sig 
+             *(*p.sig).ant := nil;
+             *P.SIG:=nil
+             *p.ant := ULT;
+             *ult.sig:= p;
+             ult:=p; 
+         FS
+         Esc("Desea hacer otra asignacion?")
+         Leer(deseo);
+         p:= prim; 
+     FM
+     Cerrar(ar);
+FA

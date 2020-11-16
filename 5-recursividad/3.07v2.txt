@@ -1,0 +1,8 @@
+// 3.07
+Función numNodos(p: puntero a Nodo):entero ES
+	Si (p <> Nil) entonces
+		numNodos:= 1 + (*p.i) + (*p.d)
+	Sino
+		numNodosp:= 0;
+	Fin-si
+Fin-funcion

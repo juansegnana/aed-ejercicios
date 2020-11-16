@@ -1,0 +1,62 @@
+// 4.15
+Supóngase que, utilizando una lista encadenada,
+se implementa una cola Q (estructura 'FIFO', es decir, 'primero en entrar, primero en salir'). 
+Diseñar un algoritmo que permita insertar o extraer un elemento, comprobando siempre si la cola está vacía o no.
+    
+Accion 4.15 ES // solo si viene cargada va el prim
+    
+    Ambiente
+    
+        nodo = reg
+            dato: N(9);
+            sig:Puntero a nodo
+        fr
+        q, res, prim: Puntero a nodo
+            
+        op: N(1);
+    
+    Proceso
+    
+    prim:= nil;
+    q:= prim;         
+    Mientras (op <> 3) 
+        Esc("Desea insertar o borrar un nodo?)
+        Esc("1 Insertar, 2 Borrar o 3 Salir")
+        Leer(op)
+        Esc("Numero ?:")
+        Leer(nrodado)
+            
+        Si op = 1 Entonces // Insertar
+            nuevo(q)
+            *q.dato:=nrodado
+            
+            Si prim = NIL entonces
+                prim:= q
+                *q.sig:=NILL
+                res:=q
+            sino
+                *q.sig:= res
+                prim:= q
+                res:= q;
+            fin-si
+            
+        Sino op = 2 
+            Si (prim = NIL) Entonces
+                Esc("ERROR LISTA VACIA")
+            Sino 
+                q:=prim;
+                Mientras (q <> NIL) Entonces // opc1
+                    res:= q
+                    q:=*q.sig
+                FM
+                
+                disponer(q)
+                res.sig:=NIL
+            Fsi
+         Sino op = 3 
+            Esc("Gracias por usar el  
+            
+    Fsi
+    
+FA
+

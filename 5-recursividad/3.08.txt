@@ -1,0 +1,17 @@
+// 3.08 Altura
+Función altura(p: puntero a Nodo):entero ES
+Ambiente
+	alturaIzq, alturaDer: entero
+Proceso
+	Si (p <> Nil) entonces
+		alturaIzq:= 1 + altura(*p.izq)
+		alturaDer:= 1 + altura(*p.der)
+		Si (alturaIzq < alturaDer) entonces
+			altura := alturaDer;
+		Sino
+			altura := alturaIzq;
+		Fin-si
+	Sino
+		altura:= 0;
+	Fin-si
+Fin-funcion
