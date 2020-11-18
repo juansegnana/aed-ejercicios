@@ -1,0 +1,16 @@
+FUNCION Invertir(arreglo: [1..N]: entero, i: entero): arreglo ES
+Ambiente
+  j : entero
+PROCESO
+        j := (N+1) - i;
+        Si (i = N) ENTONCES
+          arreglo[j] := arreglo[N]
+          Invertir := arreglo;
+        SINO
+          Invertir := Invertir(arreglo, i+1)
+          arreglo[j] := arreglo[i];
+          Invertir := arreglo;
+        FSI
+// 8 6 4 1
+// i=1, j=4 | i=2, j=3 | i=3, j=2 | i=4, j=1 -> 1en[1], inv=
+F-P
