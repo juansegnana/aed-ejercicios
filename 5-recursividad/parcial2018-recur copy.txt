@@ -1,0 +1,14 @@
+// Hecho por Emi.
+FUNCION Invertir(arreglo: [1..N]: entero, inicio: entero, fin: entero): arreglo [1..N] de entero ES
+Ambiente
+  aux : entero
+PROCESO
+        Si (inicio >= fin) ENTONCES
+          Invertir:=A;
+        SINO
+          aux:= A[fin];
+          A[fin]:= A[inicio];
+          A[inicio]:= aux;
+          Invertir:= Invertir(A, inicio+1, fin-1);  
+        FSI
+F-P

@@ -1,4 +1,5 @@
-FUNCION Invertir(arreglo: [1..N]: entero, i: entero): arreglo ES
+// Juan Segnana
+FUNCION Invertir(arreglo: [1..N]: entero, i: entero): arreglo [1..N] de entero ES
 Ambiente
   j : entero
 PROCESO

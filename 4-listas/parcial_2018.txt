@@ -1,0 +1,121 @@
+Acción PARCIAL_P1 (prim: Puntero a Nodo) ES
+Ambiente
+  
+  FECHAS = Registro
+    equipo_local: AN(40);
+    equipo_visitante: AN(40);
+    hora: N(4);
+    fecha: Fecha;
+    ciudad_local: {'A', 'B', 'C'}
+  FR
+  a_fechas: Archivo de FECHAS;
+  reg_fechas: FECHAS;
+  // ----
+  NOMBRES = Registro
+    appNom: AN(80);
+    cantidad: N(2);
+    localidad: {'A', 'B', 'C'}
+  FR
+  p: Puntero a nodo;
+  nodo = Registro
+    dato: NOMBRES;
+    sig: Puntero a nodo;
+  FR
+  // ----
+  SALIDA_1 = Registro
+    equipo_local: AN(40);
+    equipo_visitante: AN(40);
+    appNom_arbitro: AN(80);
+  FR
+  r, prim2: Puntero a nodoSalida;
+  nodoSalida = Registro
+    dato: SALIDA_1;
+    sig: Puntero a nodoSalida;
+  FR
+  // ----
+  nodoSalida2 = Registro
+    dato: AN(80);
+    ant, sig: Puntero a nodoSalida2;
+  FR
+  z, prim3, ult3, q: Puntero a nodoSalida2;
+
+Proceso
+  Abrir E/(a_fechas);
+  LEER(a_fechas, reg_fechas);
+  
+  // Punto A: Hacer nueva lista y
+  // asignar partidos a arbitros
+  p:= prim; // p son Nombres de Arbitros
+  prim2:= nil; // prim2: punto A. 
+  r:= prim2; // r: punto A.
+  Mientras NFDA(a_fechas) hacer
+    
+    Mientras (*p.dato.cantidad > 10) o (reg.localidad = *p.dato.localidad) hacer
+      // Avanzar hasta encontrar arbitro 
+      // que cumpla condición.
+      p:= *p.sig;
+    FM
+    Nuevo(r);
+    *r.dato.equipo_local:= reg_fechas.equipo_local;
+    *r.dato.equipo_visitante:= reg_fechas.equipo_visitante;
+    *r.dato.appNom_arbitro:= *p.dato.appNom;
+    *p.dato.cantidad := *p.dato.cantidad + 1; 
+    // apilar 
+    *r.sig:= prim2;
+    prim2:= r;
+    Leer(a_fechas, reg_fechas);
+    
+  FM
+
+  // Punto b) lista doble encadenada
+  // asignados = 10.
+
+  p:= prim;
+  prim3:= nil;
+  z:= prim3;
+  // Trato primer elemento circular.
+  Si (*p.dato.cantidad = 10) entonces
+    Nuevo(z);
+    *z.dato:= *p.dato.appNom;
+    prim3:= z;
+    *z.ant:= NIL;
+    *z.sig:= NIL;
+    ult3:= z;
+  FS
+  p:= *p.sig;
+  
+  Mientras (p <> prim) hacer
+    Si (*p.dato.cantidad = 10) entonces
+      
+      Nuevo(z);
+      *z.dato:= *p.dato.appNom;
+      
+      q:= prim3;
+      Mientras (*z.dato < *q.dato) hacer
+        q:= *q.sig;
+      FM
+      Si (q = prim3) entonces // Va 1ro
+        prim3:= z;
+        *q.ant:= z;
+        *z.sig:=  q;
+        *z.ant:= NIL; 
+      Sino
+        Si (q=NIL) entonces // Ultimo
+          *z.ant:= ULT;
+          *(ULT).sig:= z;
+          ULT:= z;
+          *z.sig:= NIL;
+        Sino // Medio
+          (*q.ant).sig:= z;
+          *z.ant:= *q.ant;
+          *q.ant:= z;
+          *z.sig:= q;
+        FS
+      FS
+      
+    FS
+    p:= *p.sig; // avanzar al siguiente arbitro.
+    boolPrimer:= VERDADERO; // recorrí una vez el PRIM
+  FM
+  Cerrar(a_fechas);
+Fin Acción.
