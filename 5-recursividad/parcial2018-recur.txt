@@ -1,4 +1,4 @@
-// Juan Segnana
+// JuanSegnana y GonzaZelinka
 FUNCION Invertir(arreglo: [1..N]: entero, i: entero): arreglo [1..N] de entero ES
 Ambiente
   j : entero
@@ -13,5 +13,5 @@ PROCESO
           Invertir := arreglo;
         FSI
 // 8 6 4 1
-// i=1, j=4 | i=2, j=3 | i=3, j=2 | i=4, j=1 -> 1en[1], inv=
+// i=1, j=4 | i=2, j=3 | i=3, j=2 | i=4, j=1 -> 1en[1] ...
 F-P

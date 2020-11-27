@@ -1,0 +1,90 @@
+Acción COSME (prim1: puntero a Nodo) ES
+Ambiente
+  
+  ENTRADA = Registro
+    codigo: N(4);
+    rubro_prod: N(2);
+    precio_of: N(4);
+  FR
+
+  max_prod_p: ENTRADA;
+
+  Nodo = Registro
+    dato: ENTRADA;
+    sig: puntero a Nodo;
+  FR
+  p1: puntero a Nodo;
+
+  SALIDA = Registro
+    codigo: N(2);
+    nombre: AN(32);
+    precio_of: N(4);
+    porcentaje_of: N(2,2);
+  FR
+
+  Nodo_Sal = Registro
+    dato: SALIDA;
+    sig, ant: puntero a Nodo_Sal;
+  FR
+  p2, q2, prim2, ult2, puntero a Nodo_Sal;
+  
+  PRODUCTOS = Registro
+    codigo: N(4);
+    nombre: AN(32);
+    precio: N(4);
+    rubro: N(2);
+    stock: N(4);
+  FR
+
+  a_ent: Archivo de PRODUCTOS indexado por código;
+  reg_ent: PRODUCTOS;
+  max_prod: PRODUCTOS;
+  max_porc, oferta_porc: N(2,2);
+
+Proceso
+  Abrir E/(a_ent);
+  p1:= prim1;
+  prim2:= NIL;
+
+  Mientras (p1 <> NIL) hacer
+    rubro_actual:= *p1.dato.rubro_prod;
+    max_porc:= LV;
+    Mientras (*p1.dato.rubro_prod = rubro_actual) o (p1 <> NIL) hacer
+      reg_ent.codigo:= *p1.dato.codigo;
+      Leer(a_ent, reg_ent);
+      Si (EXISTE) entonces
+        oferta_porc:= (reg_ent.precio-*p1.dato.precio_of)*100/reg_ent.precio // cambiar
+        Si (oferta_porc > max_porc) entonces
+          max_porc:= oferta_porc;
+          max_prod:= reg_ent;
+          max_prod_p:= *p1.dato;
+        FS
+      Sino
+        ESC("Error, producto no encontrado.");
+      FS
+      p1:= *p1.sig;
+    FM
+
+    Si (p <> NIL) entonces
+      Nuevo(q2);
+      *q2.dato.codigo:= max_prod.codigo;
+      *q2.dato.nombre:= max_prod.nombre;
+      *q2.dato.precio_of:= max_prod_p.precio_of;
+      *q2.dato.porcentaje_of:= max_porc;
+      p2:= prim;
+      Si (prim2 = NIL) entonces
+        prim2:= q;
+        *q.sig:= NIL;
+        *q.ant:= NIL;
+        ULT:= q;
+      Sino
+        prim2:= q2;
+        *q2.sig:= p2;
+        *p2.ant:= q2;
+        *q2.ant:= q2;
+      FS
+    FS
+  FM
+  Cerrar(a_ent);
+  
+Fin Acción.

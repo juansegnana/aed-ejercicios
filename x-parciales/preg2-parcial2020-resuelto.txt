@@ -1,0 +1,9 @@
+Función posCurva(arr: Arreglo [1..20] de entero, i: entero):entero ES
+
+  Si (arr[i] > arr[i+1]) entonces
+    posCurva:= i;
+  Sino
+    posCurva:= posCurva(arr, i+1);
+  FS
+
+FF

@@ -4,8 +4,8 @@ Acción CONSONANTES es
     
 Ambiente
 
-sec_alf : secuencia de caracteres
-v_alf : caracteres
+sec_alf : secuencia de caracter
+v_alf : caracter
 vocales = {'a', 'e', 'i', 'o', 'u'}
 cont_consonantes : entero
 

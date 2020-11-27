@@ -4,11 +4,11 @@ Acción SALIDA_SIN$ es
     
 Ambiente
 
-sec_entrada : secuencia de caracteres
-sec_salida : secuencia de caracteres
+sec_entrada : secuencia de caracter
+sec_salida : secuencia de caracter
 
-v_ent : caracteres
-v_sal : caracteres
+v_ent : caracter
+v_sal : caracter
 
 Proceso
 
